@@ -1,0 +1,34 @@
+<section class="bg-gray-50">
+  <div class="container-content py-8">
+    <h2 class="text-2xl font-bold mb-6 text-gray-900">باقات الاتصالات</h2>
+    
+    <div *ngIf="loading" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div *ngFor="let i of [1,2,3,4]" class="animate-pulse">
+        <div class="bg-white rounded-lg p-6">
+          <div class="flex gap-4">
+            <div class="bg-gray-200 w-24 h-24 rounded-lg"></div>
+            <div class="flex-grow">
+              <div class="h-6 bg-gray-200 rounded w-1/4 mb-4"></div>
+              <div class="space-y-2">
+                <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+                <div class="h-4 bg-gray-200 rounded w-2/3"></div>
+                <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="error" class="text-red-600 text-center py-8">
+      {{error}}
+    </div>
+
+    <div *ngIf="!loading && !error" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <app-product-details
+        *ngFor="let product of products"
+        [product]="product"
+      ></app-product-details>
+    </div>
+  </div>
+</section>

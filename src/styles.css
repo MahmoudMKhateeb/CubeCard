@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    font-family: 'Cairo', sans-serif;
+  }
+
+  body {
+    @apply bg-cyber-background text-cyber-text-primary;
+  }
+}
+
+@layer components {
+  .container {
+    @apply w-full;
+  }
+
+  @screen sm {
+    .container {
+      @apply max-w-[640px];
+    }
+  }
+
+  @screen md {
+    .container {
+      @apply max-w-[768px];
+    }
+  }
+
+  @screen lg {
+    .container {
+      @apply max-w-[1024px];
+    }
+  }
+
+  @screen xl {
+    .container {
+      @apply max-w-[1280px];
+    }
+  }
+
+  @screen 2xl {
+    .container {
+      @apply max-w-[1536px];
+    }
+  }
+
+  .btn-primary {
+    @apply rounded-lg bg-button-primary text-white px-4 py-2 transition-colors hover:bg-button-hover-primary;
+  }
+
+  .btn-secondary {
+    @apply rounded-lg bg-button-secondary text-white px-4 py-2 transition-colors hover:bg-button-hover-secondary;
+  }
+
+  .container-content {
+    @apply container mx-auto max-w-[80rem] px-4;
+  }
+
+  .card {
+    @apply bg-cyber-card rounded-lg shadow-card transition-shadow hover:shadow-card-hover;
+  }
+
+  .nav-link {
+    @apply text-nav-text hover:text-nav-hover transition-colors;
+  }
+
+  .category-icon {
+    @apply h-16 w-16 object-contain transition-transform hover:scale-105;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .transition-colors,
+  .transition-transform,
+  .transition-shadow {
+    transition: none;
+  }
+}

@@ -1,0 +1,34 @@
+<a [routerLink]="['/product', product.id]"
+   class="block bg-cyber-background border border-cyber-secondary/20 rounded-lg p-4 text-center hover:shadow-neon transition-all"
+   [attr.aria-label]="'عرض تفاصيل ' + product.name">
+  <!-- Product Image -->
+  <div class="aspect-square mb-3">
+    <app-product-image
+      [image]="product.image"
+      [name]="product.name"
+    ></app-product-image>
+  </div>
+
+  <!-- Product Title -->
+  <app-product-title [name]="product.name"></app-product-title>
+
+  <!-- Discount Badge -->
+  <app-discount-badge 
+    *ngIf="product.discount"
+    [discount]="product.discount"
+  ></app-discount-badge>
+
+  <!-- Prices -->
+  <app-price-display
+    [prices]="product.prices"
+    [additionalPrices]="product.additionalPrices"
+  ></app-price-display>
+
+  <!-- Region Flags -->
+  <app-region-flags
+    [regions]="product.regions || []"
+  ></app-region-flags>
+
+  <!-- Action Button -->
+  <app-action-button></app-action-button>
+</a>

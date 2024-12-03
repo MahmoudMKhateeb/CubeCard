@@ -1,0 +1,42 @@
+<section class="bg-cyber-surface">
+  <div class="container-content py-4">
+    <!-- Banner Container -->
+    <div class="relative rounded-lg shadow-card overflow-hidden h-[400px]">
+      <!-- Banner Images -->
+      <div *ngFor="let banner of banners; let i = index" 
+           class="absolute inset-0 transition-opacity duration-500"
+           [style.opacity]="currentIndex === i ? '1' : '0'">
+        <img [src]="banner.image" 
+             [alt]="banner.alt"
+             class="w-full h-full object-cover"
+             loading="lazy">
+      </div>
+
+      <!-- Navigation Arrows -->
+      <button (click)="previousBanner()"
+              class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-black/30 text-white hover:bg-black/50 transition-colors"
+              aria-label="Previous banner">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      <button (click)="nextBanner()"
+              class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-black/30 text-white hover:bg-black/50 transition-colors"
+              aria-label="Next banner">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+
+      <!-- Navigation Dots -->
+      <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
+        <button *ngFor="let banner of banners; let i = index" 
+                (click)="setCurrentBanner(i)"
+                [attr.aria-label]="'Go to slide ' + (i + 1)"
+                class="w-2 h-2 rounded-full transition-colors"
+                [style.backgroundColor]="currentIndex === i ? '#ffffff' : 'rgba(255, 255, 255, 0.5)'">
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

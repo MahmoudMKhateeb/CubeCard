@@ -1,0 +1,14 @@
+:host {
+  display: block;
+}
+
+.transition-opacity {
+  transition: opacity 500ms ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .transition-opacity,
+  .transition-colors {
+    transition: none;
+  }
+}

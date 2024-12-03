@@ -1,0 +1,74 @@
+<section class="bg-cyber-surface py-4">
+  <div class="container-content">
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      <ng-container *ngIf="!loading && !error">
+        <a *ngFor="let product of products"
+           [routerLink]="['/product', product.id]"
+           class="group bg-cyber-card rounded-lg p-4 transition-all hover:shadow-card-hover relative">
+          <!-- Region Flags -->
+          <div *ngIf="product.regions?.length" 
+               class="absolute top-2 left-2 flex gap-1 z-10">
+            <img *ngFor="let region of product.regions"
+                 [src]="region.flag"
+                 [alt]="region.name"
+                 class="w-6 h-6 rounded-full border-2 border-cyber-border shadow-sm"
+                 loading="lazy">
+          </div>
+
+          <!-- Product Image -->
+          <div class="aspect-square mb-2 flex items-center justify-center">
+            <img [src]="product.image" 
+                 [alt]="product.name"
+                 (error)="handleImageError($event)"
+                 class="w-full h-full object-contain">
+          </div>
+          
+          <!-- Product Name -->
+          <h3 class="text-sm font-medium text-cyber-text-primary text-center line-clamp-2 mb-2">
+            {{product.name}}
+          </h3>
+
+          <!-- Prices Grid -->
+          <div class="grid grid-cols-3 gap-1">
+            <div *ngFor="let price of product.prices.slice(0, 3)" 
+                 class="text-xs border border-cyber-border rounded px-2 py-1 text-center hover:border-cyber-accent-primary transition-colors text-cyber-text-secondary">
+              {{price.amount}}
+            </div>
+          </div>
+
+          <!-- Additional Prices -->
+          <div *ngIf="product.additionalPrices?.length" class="grid grid-cols-2 gap-1 mt-1">
+            <div *ngFor="let price of product.additionalPrices" 
+                 class="text-xs border border-cyber-border rounded px-2 py-1 text-center hover:border-cyber-accent-primary transition-colors text-cyber-text-secondary">
+              {{price.amount}}
+            </div>
+          </div>
+        </a>
+      </ng-container>
+
+      <!-- Loading State -->
+      <ng-container *ngIf="loading">
+        <div *ngFor="let i of [1,2,3,4,5,6,7,8]" class="animate-pulse">
+          <div class="bg-cyber-card rounded-lg p-4">
+            <div class="aspect-square bg-cyber-surface rounded mb-2"></div>
+            <div class="h-4 bg-cyber-surface rounded w-3/4 mx-auto mb-2"></div>
+            <div class="grid grid-cols-3 gap-1">
+              <div class="h-6 bg-cyber-surface rounded"></div>
+              <div class="h-6 bg-cyber-surface rounded"></div>
+              <div class="h-6 bg-cyber-surface rounded"></div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error" class="text-center py-8">
+      <div class="text-red-500 mb-2">{{error}}</div>
+      <button (click)="retryLoading()" 
+              class="text-cyber-accent-primary hover:text-cyber-hover-primary font-medium">
+        إعادة المحاولة
+      </button>
+    </div>
+  </div>
+</section>
