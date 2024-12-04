@@ -1,20 +1,20 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { map } from 'rxjs/operators';
 import { CartService } from '../../../services/cart.service';
 import { SearchBoxComponent } from '../../../features/search/components/search-box/search-box.component';
 
 @Component({
   selector: 'app-navigation',
-  standalone: true,
-  imports: [CommonModule, RouterModule, SearchBoxComponent],
   templateUrl: './navigation.component.html',
-  styleUrls: ['./navigation.component.css']
+  styleUrls: ['./navigation.component.css'],
+  standalone: true,
+  imports: [CommonModule, RouterModule, SearchBoxComponent]
 })
 export class NavigationComponent {
   cartItemCount$ = this.cartService.getCartItems().pipe(
-    map((items) => items.reduce((total, item) => total + item.quantity, 0))
+      map((items) => items.reduce((total, item) => total + item.quantity, 0))
   );
 
   constructor(private cartService: CartService) {}

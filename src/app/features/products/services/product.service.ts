@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { Product } from '../../../shared/models/product.interface';
+import {HttpClient} from "@angular/common/http";
 
 @Injectable({
   providedIn: 'root'
@@ -146,13 +147,15 @@ export class ProductService {
       ]
     }
   ];
-
+  private apiUrl = 'http://localhost:8000/api/products'; // Update with your API URL
+  constructor(private http: HttpClient) {}
   getProducts(): Observable<Product[]> {
-    return of(this.products);
+    return this.http.get<Product[]>(this.apiUrl);
+    // return of(this.products);
   }
 
-  getProductById(id: number): Observable<Product | undefined> {
-    return of(this.products.find(product => product.id === id));
+  getProductById(id: number): Observable<Product> {
+    return this.http.get<Product>(`${this.apiUrl}/${id}`);
   }
 
   searchProducts(query: string): Observable<Product[]> {

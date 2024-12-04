@@ -4,3 +4,42 @@
     top: 0;
     z-index: 50;
 }
+
+.nav-link {
+    @apply text-cyber-text-primary hover:text-cyber-accent-primary transition-colors;
+}
+
+.cart-badge {
+    @apply absolute -top-2 -right-2 bg-cyber-accent-primary text-white text-xs w-5 h-5
+    flex items-center justify-center rounded-full;
+}
+
+.logo {
+    @apply h-12;
+}
+
+.nav-container {
+    @apply container mx-auto max-w-[80rem] px-4;
+}
+
+.nav-wrapper {
+    @apply flex justify-between items-center py-3;
+}
+
+.nav-links {
+    @apply flex items-center gap-6;
+}
+
+.search-container {
+    @apply flex-1 max-w-xl mx-8;
+}
+
+.cart-icon {
+    @apply h-6 w-6 text-cyber-text-primary hover:text-cyber-accent-primary;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .transition-colors {
+        transition: none;
+    }
+}
