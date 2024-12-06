@@ -1,0 +1,16 @@
+.category-button {
+    @apply bg-cyber-card border-none h-[120px] w-[120px] flex flex-col items-center justify-center p-4 rounded-lg
+    transition-all hover:shadow-card-hover hover:-translate-y-0.5;
+}
+
+.category-icon {
+    @apply w-10 h-10 mb-2 transition-transform group-hover:scale-105;
+}
+
+.category-title {
+    @apply text-cyber-text-primary text-sm mt-2 text-center font-normal;
+}
+.highlighted-category {
+    background-color: rgb(40 161 125 / var(--tw-border-opacity, 1));
+    border: 2px solid rgb(40 161 125 / var(--tw-border-opacity, 1));
+}

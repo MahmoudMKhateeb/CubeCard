@@ -20,7 +20,7 @@ import { SearchBoxComponent } from './features/search/components/search-box/sear
 
 // Pages
 import { HomePage } from './features/home/pages/home.page';
-import { ProductDetailsPage } from './features/products/pages/product-details/product-details.page';
+import { ProductDetailsComponent } from './features/products/pages/product-details/product-details.component';
 import { CategoriesPage } from './features/categories/pages/categories.page';
 import { CartPage } from './features/cart/pages/cart.page';
 import { PaymentPage } from './features/payment/pages/payment.page';
@@ -37,7 +37,7 @@ import { AboutPage } from './features/about/pages/about.page';
     ProductGridComponent,
     ProductCardComponent,
     HomePage,
-    ProductDetailsPage,
+    ProductDetailsComponent,
     CategoriesPage,
     CartPage,
     PaymentPage,

@@ -38,7 +38,7 @@ export class CartService {
   addToCart(product: Product, selectedPrice: { amount: string; currency: string }, quantity: number = 1): void {
     const currentItems = this.cartItems.getValue();
     const existingItemIndex = currentItems.findIndex(item => 
-      item.product.id === product.id && 
+      item.product.uuid === product.uuid &&
       item.selectedPrice.amount === selectedPrice.amount
     );
 

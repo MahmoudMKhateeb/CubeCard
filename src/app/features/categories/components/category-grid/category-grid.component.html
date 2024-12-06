@@ -1,0 +1,50 @@
+<section class="bg-cyber-surface">
+    <div class="container-content py-8">
+        <div class="flex justify-center">
+            <div class="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 xl:grid-cols-9 gap-4">
+                <div *ngFor="let category of categories">
+                    <button
+                            type="button"
+                            [routerLink]="category.link"
+                            class="category-button"
+                            (click)="selectCategory(category.id)"
+                            [ngClass]="{'highlighted-category': selectedCategory === category.id}"
+                    >
+                        <img
+                                [src]="category.icon"
+                                [alt]="category.name"
+                                loading="lazy"
+                                width="40"
+                                height="40"
+                                draggable="false"
+                                class="category-icon"
+                        >
+                        <h1 class="category-title">
+                            {{category.name}}
+                        </h1>
+                    </button>
+                </div>
+
+                <!-- All Categories Button -->
+<!--                <div>-->
+<!--                    <button-->
+<!--                            type="button"-->
+<!--                            routerLink="/categories"-->
+<!--                            class="category-button"-->
+<!--                            (click)="selectCategory(1)"-->
+<!--                            [ngClass]="{'highlighted-category': selectedCategory === '/categories'}"-->
+<!--                    >-->
+<!--                        <div class="w-10 h-10 rounded-full bg-cyber-accent-primary bg-opacity-10 flex items-center justify-center mb-2">-->
+<!--                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cyber-accent-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">-->
+<!--                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />-->
+<!--                            </svg>-->
+<!--                        </div>-->
+<!--                        <h1 class="category-title">-->
+<!--                            كل التصنيفات-->
+<!--                        </h1>-->
+<!--                    </button>-->
+<!--                </div>-->
+            </div>
+        </div>
+    </div>
+</section>

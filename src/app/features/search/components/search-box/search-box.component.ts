@@ -16,7 +16,7 @@ import { getFormattedPrice } from '../../../../shared/utils/price.utils';
 })
 export class SearchBoxComponent implements OnDestroy {
   searchQuery = '';
-  searchResults: Product[] = [];
+  searchResults: any;
   showResults = false;
   isLoading = false;
   getFormattedPrice = getFormattedPrice;

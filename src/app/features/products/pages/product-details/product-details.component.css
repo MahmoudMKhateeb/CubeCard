@@ -1,0 +1,39 @@
+  .price-button {
+      @apply px-4 py-2 border border-cyber-border rounded-lg transition-all text-center text-cyber-text-primary bg-cyber-surface hover:border-cyber-accent-primary;
+    }
+
+    .selected-price {
+      @apply bg-cyber-accent-primary text-white border-cyber-accent-primary;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .transition-all {
+        transition: none;
+      }
+    }
+  .region-tab {
+      background-color: transparent;
+      color: var(--text-color-primary);
+      transition: all 0.3s ease;
+  }
+
+  .selected-region-tab {
+      background-color: rgb(40 161 125 / var(--tw-border-opacity, 1));
+      color: #fff;
+  }
+
+  .region-tab:hover {
+      background-color: rgb(40 161 125 / 0.1);
+  }
+
+  button {
+      cursor: pointer;
+  }
+
+  button img {
+      display: inline-block;
+  }
+
+  button span {
+      font-weight: bold;
+  }

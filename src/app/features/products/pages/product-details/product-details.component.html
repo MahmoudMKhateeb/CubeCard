@@ -1,0 +1,123 @@
+<div class="min-h-screen bg-cyber-surface py-8">
+    <div class="container-content">
+        <!-- Breadcrumb -->
+        <nav class="mb-8" aria-label="Breadcrumb">
+            <ol class="flex items-center space-x-4">
+                <li>
+                    <a routerLink="/" class="text-cyber-text-secondary hover:text-cyber-accent-primary">الرئيسية</a>
+                </li>
+                <li>
+                    <span class="mx-2 text-cyber-border">/</span>
+                    <span class="text-cyber-text-primary">{{product?.name || 'تحميل...'}}</span>
+                </li>
+            </ol>
+        </nav>
+
+        <div *ngIf="product" class="bg-cyber-card rounded-lg shadow-card">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8">
+                <!-- Product Image -->
+                <div class="aspect-square bg-cyber-surface rounded-lg p-4 flex items-center justify-center">
+                    <img [src]="product.image"
+                         [alt]="product.name"
+                         class="w-full h-full object-contain"
+                         (error)="handleImageError($event)">
+                </div>
+
+                <!-- Product Info -->
+                <div>
+                    <h1 class="text-2xl font-bold mb-4 text-cyber-text-primary">{{product.name}}</h1>
+
+                    <!-- Region Tabs -->
+                    <div class="flex items-center justify-start mb-6 space-x-4">
+                        <div *ngFor="let region of regions; let i = index">
+                            <button
+                                    (click)="selectRegion(i)"
+                                    [ngClass]="{'selected-region-tab': selectedRegionIndex === i, 'region-tab': selectedRegionIndex !== i}"
+                                    class="px-4 py-2 rounded-full border border-cyber-border flex items-center gap-2 text-cyber-text-primary hover:bg-cyber-hover-primary transition"
+                            >
+                                <img [src]="region.flag" alt="{{region.name}}" class="w-6 h-6">
+                                <span>{{region.name}}</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <p class="text-cyber-text-secondary mb-6">{{product.description}}</p>
+
+                    <!-- Features -->
+                    <div class="mb-6">
+                        <h2 class="text-lg font-semibold mb-3 text-cyber-text-primary">المميزات</h2>
+                        <ul class="space-y-2">
+                            <li *ngFor="let feature of product.features"
+                                class="flex items-center gap-2 text-cyber-text-secondary">
+                                <svg class="w-5 h-5 text-cyber-accent-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                {{feature}}
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Prices -->
+                    <div class="mb-6">
+                        <h2 class="text-lg font-semibold mb-3 text-cyber-text-primary">السعر</h2>
+                        <div class="grid grid-cols-3 gap-3">
+                            <button *ngFor="let price of product.prices"
+                                    (click)="selectPrice(price)"
+                                    [class.selected-price]="selectedPrice?.amount === price.amount"
+                                    class="price-button">
+                                {{price.amount}} {{price.currency}}
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Additional Prices -->
+                    <div *ngIf="product.additionalPrices?.length" class="mb-6">
+                        <div class="grid grid-cols-2 gap-3">
+                            <button *ngFor="let price of product.additionalPrices"
+                                    (click)="selectPrice(price)"
+                                    [class.selected-price]="selectedPrice?.amount === price.amount"
+                                    class="price-button">
+                                {{price.amount}} {{price.currency}}
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Add to Cart -->
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4">
+                            <div class="flex items-center border border-cyber-border rounded-lg">
+                                <button (click)="decrementQuantity()"
+                                        class="px-3 py-1 text-cyber-text-secondary hover:text-cyber-text-primary">
+                                    -
+                                </button>
+                                <span class="px-3 py-1 border-x border-cyber-border text-cyber-text-primary">{{quantity}}</span>
+                                <button (click)="incrementQuantity()"
+                                        class="px-3 py-1 text-cyber-text-secondary hover:text-cyber-text-primary">
+                                    +
+                                </button>
+                            </div>
+                            <span class="text-sm text-cyber-text-secondary">
+                                يمكنك طلب لغاية (5) بطاقات من هذا النوع
+                            </span>
+                        </div>
+
+                        <button (click)="addToCart()"
+                                [disabled]="!selectedPrice"
+                                class="w-full bg-cyber-accent-primary text-white py-3 rounded-lg hover:bg-cyber-hover-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                            إضافة إلى السلة
+                        </button>
+
+                        <div *ngIf="addedToCart" class="text-center text-cyber-accent-primary">
+                            تمت إضافة المنتج إلى السلة
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div *ngIf="!product" class="flex items-center justify-center py-12">
+            <div class="animate-spin rounded-full h-12 w-12 border-4 border-cyber-accent-primary border-t-transparent"></div>
+        </div>
+    </div>
+</div>

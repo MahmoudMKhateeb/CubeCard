@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { HomePage } from './features/home/pages/home.page';
-import { ProductDetailsPage } from './features/products/pages/product-details/product-details.page';
+import { ProductDetailsComponent } from './features/products/pages/product-details/product-details.component';
 import { CategoriesPage } from './features/categories/pages/categories.page';
 import { CartPage } from './features/cart/pages/cart.page';
 import { PaymentPage } from './features/payment/pages/payment.page';
@@ -21,7 +21,7 @@ const routes: Routes = [
   },
   { 
     path: 'product/:id', 
-    component: ProductDetailsPage,
+    component: ProductDetailsComponent,
     title: 'تفاصيل المنتج'
   },
   {

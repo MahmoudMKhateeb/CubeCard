@@ -27,31 +27,30 @@
             />
         </svg>
 
-        <!-- Clear Button -->
-        <button
-                *ngIf="searchQuery"
-                (click)="clearSearch()"
-                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-cyber-text-secondary
-             hover:text-cyber-text-primary transition-colors"
-                type="button"
-        >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-        </button>
+<!--        &lt;!&ndash; Clear Button &ndash;&gt;-->
+<!--        <button-->
+<!--                *ngIf="searchQuery"-->
+<!--                (click)="clearSearch()"-->
+<!--                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-cyber-text-secondary-->
+<!--             hover:text-cyber-text-primary transition-colors"-->
+<!--                type="button"-->
+<!--        >-->
+<!--            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">-->
+<!--                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />-->
+<!--            </svg>-->
+<!--        </button>-->
     </div>
 
     <!-- Loading Indicator -->
     <div *ngIf="isLoading" class="absolute right-3 top-1/2 transform -translate-y-1/2">
         <div class="animate-spin rounded-full h-5 w-5 border-2 border-cyber-accent-primary border-t-transparent"></div>
     </div>
-
     <!-- Search Results -->
     <div *ngIf="showResults && searchResults.length > 0"
          class="absolute z-50 w-full mt-2 bg-cyber-card rounded-lg shadow-lg border border-cyber-border max-h-96 overflow-y-auto">
         <div class="p-2">
             <a *ngFor="let product of searchResults"
-               [routerLink]="['/product', product.id]"
+               [routerLink]="['/product', product.uuid]"
                class="flex items-center gap-3 p-2 rounded-lg hover:bg-cyber-surface transition-colors">
                 <!-- Product Image -->
                 <div class="w-12 h-12 bg-cyber-surface rounded-lg p-1 flex-shrink-0">
