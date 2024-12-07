@@ -23,7 +23,7 @@ export class ProductMainService {
     );
   }
 
-  getProductById(uuid: string): Observable<Product> {
+  getProductById(uuid: string): Observable<any> {
     return this.http.get<Product>(`${this.apiUrl}products/${uuid}`).pipe(
         map(product => {
           product.image = `${this.imagesUrl}/${product.image}`;

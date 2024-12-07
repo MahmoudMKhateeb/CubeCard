@@ -12,18 +12,18 @@
                 </li>
                 <li>
                     <span class="text-cyber-text-secondary mx-2">«</span>
-                    <span class="text-cyber-text-secondary">سعودي</span>
+                    <span class="text-cyber-text-secondary">{{ regions[selectedRegionIndex]?.region || 'Region' }}</span>
                 </li>
             </ol>
         </nav>
 
-        <h1 class="text-3xl font-bold text-white mb-8">شحن بطاقة ايتونز</h1>
+        <h1 class="text-3xl font-bold text-white mb-8">{{ product?.name || 'Loading...' }}</h1>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Left Column - Product Image -->
             <div class="lg:col-span-1">
                 <div class="bg-cyber-card rounded-lg p-6">
-                    <img [src]="product?.image || 'https://app.rasseed.com/files/itunes.jpg'"
+                    <img [src]="product?.image || defaultImage"
                          [alt]="product?.name"
                          class="w-full rounded-lg"
                          (error)="handleImageError($event)">
@@ -39,8 +39,7 @@
                                 (click)="selectRegion(i)"
                                 [class.bg-cyber-accent-primary]="selectedRegionIndex === i"
                                 class="flex items-center gap-2 px-4 py-2 rounded-lg border border-cyber-border hover:border-cyber-accent-primary transition-colors">
-                            <img [src]="region.flag" [alt]="region.name" class="w-6 h-6">
-                            <span class="text-cyber-text-primary">{{region.name}}</span>
+                            <span class="text-cyber-text-primary">{{ region.region }}</span>
                         </button>
                     </div>
 
@@ -48,11 +47,11 @@
                     <div class="mb-8">
                         <h2 class="text-xl text-cyber-text-primary mb-4">قيمة البطاقة</h2>
                         <div class="grid grid-cols-5 gap-3">
-                            <button *ngFor="let price of cardValues"
+                            <button *ngFor="let price of regions[selectedRegionIndex]?.prices"
                                     (click)="selectPrice(price)"
                                     [class.bg-cyber-accent-primary]="selectedPrice?.amount === price.amount"
                                     class="px-4 py-2 rounded-lg border border-cyber-border hover:border-cyber-accent-primary transition-colors text-cyber-text-primary">
-                                {{price.amount}}
+                                {{ price.amount }} {{ price.currency }}
                             </button>
                         </div>
                     </div>
@@ -60,7 +59,7 @@
                     <!-- Quantity Selection -->
                     <div class="mb-8">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-cyber-text-secondary">قيمة شحن الرصيد لفئة {{selectedPrice?.amount || 'SAR 50'}}</span>
+                            <span class="text-cyber-text-secondary">قيمة شحن الرصيد لفئة {{ selectedPrice?.amount || '...' }}</span>
                             <span class="text-cyber-text-secondary">يمكنك طلب لغاية (1) بطاقات من هذا النوع</span>
                         </div>
                         <div class="flex items-center gap-4">
@@ -69,7 +68,7 @@
                                    min="1"
                                    max="1"
                                    class="w-20 px-3 py-2 bg-cyber-surface border border-cyber-border rounded-lg text-center text-cyber-text-primary">
-                            <span class="text-cyber-accent-primary text-2xl font-bold">{{selectedPrice?.amount || '50'}} ر.س</span>
+                            <span class="text-cyber-accent-primary text-2xl font-bold">{{ selectedPrice?.amount || '...' }} ر.س</span>
                         </div>
                         <p class="text-cyber-text-secondary mt-2">شامل قيمة الضريبة المضافة 15%</p>
                     </div>

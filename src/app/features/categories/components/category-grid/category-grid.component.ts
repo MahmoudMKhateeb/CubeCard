@@ -23,7 +23,9 @@ export class CategoryGridComponent implements OnInit {
   selectCategory(categoryID: number): void {
     console.log(categoryID);
     this.selectedCategory = categoryID;
-    this.productService.getProducts();
+    this.productService.getProducts().subscribe(products => {
+      console.log(products);
+    });
   }
   fetchCategories(): void {
     this.categoryService.getCategories().subscribe({

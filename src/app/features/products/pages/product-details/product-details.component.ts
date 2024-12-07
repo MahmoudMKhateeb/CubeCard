@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CartService } from '../../../../services/cart.service';
-import { Product } from '../../../../shared/models/product.interface';
 import { ProductMainService } from '../../services/product.service';
 
 @Component({
@@ -10,42 +9,13 @@ import { ProductMainService } from '../../services/product.service';
   styleUrls: ['./product-details.component.css']
 })
 export class ProductDetailsComponent implements OnInit {
-  product?: Product;
+  product?: any; // Use appropriate Product interface if available
+  regions: any[] = [];
+  selectedRegionIndex: number = 0;
   selectedPrice?: { amount: string; currency: string };
   quantity = 1;
   addedToCart = false;
   defaultImage = 'https://app.rasseed.com/files/itunes.jpg';
-
-  regions = [
-    { name: 'سعودي', flag: 'https://flagcdn.com/sa.svg' },
-    { name: 'امريكي', flag: 'https://flagcdn.com/us.svg' },
-    { name: 'بريطاني', flag: 'https://flagcdn.com/gb.svg' }
-  ];
-
-  cardValues = [
-    { amount: 'SAR 50', currency: 'SAR' },
-    { amount: 'SAR 75', currency: 'SAR' },
-    { amount: 'SAR 100', currency: 'SAR' },
-    { amount: 'SAR 150', currency: 'SAR' },
-    { amount: 'SAR 250', currency: 'SAR' },
-    { amount: 'SAR 300', currency: 'SAR' },
-    { amount: 'SAR 350', currency: 'SAR' },
-    { amount: 'SAR 400', currency: 'SAR' },
-    { amount: 'SAR 450', currency: 'SAR' },
-    { amount: 'SAR 500', currency: 'SAR' },
-    { amount: 'SAR 550', currency: 'SAR' },
-    { amount: 'SAR 600', currency: 'SAR' },
-    { amount: 'SAR 700', currency: 'SAR' },
-    { amount: 'SAR 750', currency: 'SAR' },
-    { amount: 'SAR 800', currency: 'SAR' },
-    { amount: 'SAR 900', currency: 'SAR' },
-    { amount: 'SAR 950', currency: 'SAR' },
-    { amount: 'SAR 1300', currency: 'SAR' },
-    { amount: 'SAR 1700', currency: 'SAR' },
-    { amount: 'SAR 1900', currency: 'SAR' }
-  ];
-
-  selectedRegionIndex: number = 0;
 
   constructor(
       private route: ActivatedRoute,
@@ -57,10 +27,13 @@ export class ProductDetailsComponent implements OnInit {
   ngOnInit() {
     const uuid = this.route.snapshot.paramMap.get('id');
     if (uuid) {
-      this.productService.getProductById(uuid).subscribe(product => {
-        if (product) {
-          this.product = product;
-          this.selectPrice(this.cardValues[0]);
+      this.productService.getProductById(uuid).subscribe(data => {
+        if (data) {
+          this.product = data.product;
+          this.regions = data.regions;
+          if (this.regions.length > 0 && this.regions[0].prices.length > 0) {
+            this.selectPrice(this.regions[0].prices[0]);
+          }
         }
       });
     }
@@ -68,6 +41,11 @@ export class ProductDetailsComponent implements OnInit {
 
   selectRegion(index: number): void {
     this.selectedRegionIndex = index;
+    if (this.regions[index].prices.length > 0) {
+      this.selectPrice(this.regions[index].prices[0]);
+    } else {
+      this.selectedPrice = undefined;
+    }
   }
 
   selectPrice(price: { amount: string; currency: string }): void {
@@ -85,9 +63,9 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   handleImageError(event: Event): void {
-    const img = event.target as HTMLImageElement;
-    if (img) {
-      img.src = this.defaultImage;
-    }
+    // const img = event.target as HTMLImageElement;
+    // if (img) {
+    //   img.src = this.defaultImage;
+    // }
   }
 }
