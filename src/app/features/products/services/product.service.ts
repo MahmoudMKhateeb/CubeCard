@@ -23,6 +23,16 @@ export class ProductMainService {
     );
   }
 
+  getProductByCatId(id:number): Observable<Product[]> {
+      return this.http.get<Product[]>(this.apiUrl+"products/GetProductByCategory/"+id).pipe(
+          map(products => products.map(product => {
+              return {
+                  ...product,
+                  image: `${this.imagesUrl}/${product.image}`
+              };
+          }))
+      );
+  }
   getProductById(uuid: string): Observable<any> {
     return this.http.get<Product>(`${this.apiUrl}products/${uuid}`).pipe(
         map(product => {

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {Category, CategoryService} from "../../category.service";
 import {Router} from "@angular/router";
 import {ProductMainService} from "../../../products/services/product.service";
+import {NgEventBus} from "ng-event-bus";
 
 @Component({
   selector: 'app-category-grid',
@@ -13,7 +14,7 @@ export class CategoryGridComponent implements OnInit {
   loading = true;
   error = '';
 
-  constructor(private categoryService: CategoryService , private productService: ProductMainService) {}
+  constructor(private categoryService: CategoryService , private productService: ProductMainService, private _eventBus:NgEventBus) {}
 
   ngOnInit(): void {
     this.fetchCategories();
@@ -23,9 +24,7 @@ export class CategoryGridComponent implements OnInit {
   selectCategory(categoryID: number): void {
     console.log(categoryID);
     this.selectedCategory = categoryID;
-    this.productService.getProducts().subscribe(products => {
-      console.log(products);
-    });
+    this._eventBus.cast('Category:selection', categoryID);
   }
   fetchCategories(): void {
     this.categoryService.getCategories().subscribe({

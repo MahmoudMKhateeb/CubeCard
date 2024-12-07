@@ -25,6 +25,7 @@ import { CategoriesPage } from './features/categories/pages/categories.page';
 import { CartPage } from './features/cart/pages/cart.page';
 import { PaymentPage } from './features/payment/pages/payment.page';
 import { AboutPage } from './features/about/pages/about.page';
+import {NgEventBus} from "ng-event-bus";
 
 @NgModule({
   declarations: [
@@ -53,7 +54,7 @@ import { AboutPage } from './features/about/pages/about.page';
     NavigationComponent,
     SearchBoxComponent
   ],
-  providers: [],
+  providers: [NgEventBus],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

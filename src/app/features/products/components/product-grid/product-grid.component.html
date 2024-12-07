@@ -1,10 +1,19 @@
 <section class="bg-cyber-surface py-4">
     <div class="container-content">
+        <!-- Empty Products -->
+        <div *ngIf="products?.length === 0 && !loading" class="text-center py-12">
+            <h2 class="text-xl font-semibold mb-2 text-cyber-text-primary">لا يوجد منتجات لهذا الصنف</h2>
+            <a (click)="loadProducts();" class="inline-block bg-cyber-accent-primary text-white px-6 py-2 rounded-lg hover:bg-cyber-hover-primary transition-colors">
+                تصفح كل المنتجات
+            </a>
+        </div>
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+
             <ng-container *ngIf="!loading && !error">
                 <a *ngFor="let product of products"
                    [routerLink]="['/product', product.uuid]"
                    class="group bg-cyber-card rounded-lg p-4 transition-all hover:shadow-card-hover relative">
+
                     <!-- Region Flags -->
                     <div class="absolute top-2 left-2 flex gap-1 z-10">
                         <img *ngFor="let region of product.regions"
