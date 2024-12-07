@@ -6,7 +6,7 @@
 }
 
 .nav-link {
-    @apply text-cyber-text-primary hover:text-cyber-accent-primary transition-colors;
+    @apply text-cyber-text-primary hover:text-cyber-accent-primary transition-colors px-4 py-2;
 }
 
 .cart-badge {
@@ -14,24 +14,20 @@
     flex items-center justify-center rounded-full;
 }
 
-.logo {
-    @apply h-12;
-}
-
 .nav-container {
     @apply container mx-auto max-w-[80rem] px-4;
 }
 
 .nav-wrapper {
-    @apply flex justify-between items-center py-3;
+    @apply flex justify-between items-center py-2 sm:py-3;
 }
 
 .nav-links {
-    @apply flex items-center gap-6;
+    @apply items-center gap-4 sm:gap-6;
 }
 
 .search-container {
-    @apply flex-1 max-w-xl mx-8;
+    @apply flex-1 max-w-xl mx-4 sm:mx-8;
 }
 
 .cart-icon {

@@ -16,6 +16,11 @@ export class NavigationComponent {
   cartItemCount$ = this.cartService.getCartItems().pipe(
       map((items) => items.reduce((total, item) => total + item.quantity, 0))
   );
+  isMobileMenuOpen = false;
 
   constructor(private cartService: CartService) {}
+
+  toggleMobileMenu(): void {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
 }

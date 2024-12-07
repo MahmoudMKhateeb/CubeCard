@@ -1,12 +1,12 @@
 <section class="bg-cyber-surface">
-    <div class="container-content py-8">
+    <div class="container-content py-4 sm:py-8">
         <div class="flex justify-center">
-            <div class="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 xl:grid-cols-9 gap-4">
+            <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-9 gap-2 sm:gap-4">
                 <div *ngFor="let category of categories">
                     <button
                             type="button"
                             [routerLink]="category.link"
-                            class="category-button"
+                            class="category-button w-full sm:w-[120px] h-[90px] sm:h-[120px]"
                             (click)="selectCategory(category.id)"
                             [ngClass]="{'highlighted-category': selectedCategory === category.id}"
                     >
@@ -14,12 +14,12 @@
                                 [src]="category.icon"
                                 [alt]="category.name"
                                 loading="lazy"
-                                width="40"
-                                height="40"
+                                width="32"
+                                height="32"
+                                class="w-8 h-8 sm:w-10 sm:h-10 mb-1 sm:mb-2 category-icon"
                                 draggable="false"
-                                class="category-icon"
                         >
-                        <h1 class="category-title">
+                        <h1 class="category-title text-xs sm:text-sm line-clamp-2">
                             {{category.name}}
                         </h1>
                     </button>
@@ -29,16 +29,16 @@
                 <div>
                     <button
                             type="button"
-                            class="category-button"
+                            class="category-button w-full sm:w-[120px] h-[90px] sm:h-[120px]"
                             (click)="selectCategory(0)"
                             [ngClass]="{'highlighted-category': selectedCategory === 0}"
                     >
-                        <div class="w-10 h-10 rounded-full bg-cyber-accent-primary bg-opacity-10 flex items-center justify-center mb-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cyber-accent-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-cyber-accent-primary bg-opacity-10 flex items-center justify-center mb-1 sm:mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6 text-cyber-accent-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
                             </svg>
                         </div>
-                        <h1 class="category-title">
+                        <h1 class="category-title text-xs sm:text-sm">
                             كل التصنيفات
                         </h1>
                     </button>
