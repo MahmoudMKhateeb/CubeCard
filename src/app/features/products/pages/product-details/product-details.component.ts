@@ -7,19 +7,42 @@ import { ProductMainService } from '../../services/product.service';
 @Component({
   selector: 'app-product-details',
   templateUrl: './product-details.component.html',
-  styleUrls: ['./product-details.component.css'],
+  styleUrls: ['./product-details.component.css']
 })
 export class ProductDetailsComponent implements OnInit {
   product?: Product;
   selectedPrice?: { amount: string; currency: string };
   quantity = 1;
   addedToCart = false;
-  defaultImage = 'https://app.rasseed.com/files/image%20ar&en-01018109.png';
+  defaultImage = 'https://app.rasseed.com/files/itunes.jpg';
 
   regions = [
-    { name: 'SA', flag: 'https://flagcdn.com/sa.svg' },
-    { name: 'UK', flag: 'https://flagcdn.com/gb.svg' },
-    { name: 'USA', flag: 'https://flagcdn.com/us.svg' }
+    { name: 'سعودي', flag: 'https://flagcdn.com/sa.svg' },
+    { name: 'امريكي', flag: 'https://flagcdn.com/us.svg' },
+    { name: 'بريطاني', flag: 'https://flagcdn.com/gb.svg' }
+  ];
+
+  cardValues = [
+    { amount: 'SAR 50', currency: 'SAR' },
+    { amount: 'SAR 75', currency: 'SAR' },
+    { amount: 'SAR 100', currency: 'SAR' },
+    { amount: 'SAR 150', currency: 'SAR' },
+    { amount: 'SAR 250', currency: 'SAR' },
+    { amount: 'SAR 300', currency: 'SAR' },
+    { amount: 'SAR 350', currency: 'SAR' },
+    { amount: 'SAR 400', currency: 'SAR' },
+    { amount: 'SAR 450', currency: 'SAR' },
+    { amount: 'SAR 500', currency: 'SAR' },
+    { amount: 'SAR 550', currency: 'SAR' },
+    { amount: 'SAR 600', currency: 'SAR' },
+    { amount: 'SAR 700', currency: 'SAR' },
+    { amount: 'SAR 750', currency: 'SAR' },
+    { amount: 'SAR 800', currency: 'SAR' },
+    { amount: 'SAR 900', currency: 'SAR' },
+    { amount: 'SAR 950', currency: 'SAR' },
+    { amount: 'SAR 1300', currency: 'SAR' },
+    { amount: 'SAR 1700', currency: 'SAR' },
+    { amount: 'SAR 1900', currency: 'SAR' }
   ];
 
   selectedRegionIndex: number = 0;
@@ -37,9 +60,7 @@ export class ProductDetailsComponent implements OnInit {
       this.productService.getProductById(uuid).subscribe(product => {
         if (product) {
           this.product = product;
-          if (product.prices.length) {
-            this.selectPrice(product.prices[0]);
-          }
+          this.selectPrice(this.cardValues[0]);
         }
       });
     }
@@ -47,23 +68,10 @@ export class ProductDetailsComponent implements OnInit {
 
   selectRegion(index: number): void {
     this.selectedRegionIndex = index;
-    // Optionally, add logic to adjust product data based on the selected region if necessary.
   }
 
   selectPrice(price: { amount: string; currency: string }): void {
     this.selectedPrice = price;
-  }
-
-  incrementQuantity(): void {
-    if (this.quantity < 5) {
-      this.quantity++;
-    }
-  }
-
-  decrementQuantity(): void {
-    if (this.quantity > 1) {
-      this.quantity--;
-    }
   }
 
   addToCart(): void {
