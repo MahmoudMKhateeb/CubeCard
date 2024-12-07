@@ -5,8 +5,10 @@ import { HomePage } from './features/home/pages/home.page';
 import { ProductDetailsComponent } from './features/products/pages/product-details/product-details.component';
 import { CategoriesPage } from './features/categories/pages/categories.page';
 import { CartPage } from './features/cart/pages/cart.page';
-import { PaymentPage } from './features/payment/pages/payment.page';
+import { PaymentComponent } from './features/payment/pages/payment.component';
 import { AboutPage } from './features/about/pages/about.page';
+import { OrderSuccessPage } from './features/order/pages/order-success/order-success.page';
+import { OrderFailedPage } from './features/order/pages/order-failed/order-failed.page';
 
 const routes: Routes = [
   { 
@@ -31,13 +33,23 @@ const routes: Routes = [
   },
   {
     path: 'payment',
-    component: PaymentPage,
+    component: PaymentComponent,
     title: 'إتمام الطلب'
   },
   {
     path: 'about',
     component: AboutPage,
     title: 'عن كيوب كارد'
+  },
+  {
+    path: 'order/success/:id',
+    component: OrderSuccessPage,
+    title: 'تم الطلب بنجاح'
+  },
+  {
+    path: 'order/failed/:id',
+    component: OrderFailedPage,
+    title: 'فشل الطلب'
   },
   {
     path: '**',

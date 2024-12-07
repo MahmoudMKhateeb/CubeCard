@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AppRoutingModule } from './app-routing.module';
+import { NgEventBus } from "ng-event-bus";
 
 // Components
 import { AppComponent } from './core/components/app/app.component';
@@ -23,9 +24,11 @@ import { HomePage } from './features/home/pages/home.page';
 import { ProductDetailsComponent } from './features/products/pages/product-details/product-details.component';
 import { CategoriesPage } from './features/categories/pages/categories.page';
 import { CartPage } from './features/cart/pages/cart.page';
-import { PaymentPage } from './features/payment/pages/payment.page';
+import { PaymentComponent } from './features/payment/pages/payment.component';
 import { AboutPage } from './features/about/pages/about.page';
-import {NgEventBus} from "ng-event-bus";
+import { OrderSuccessPage } from './features/order/pages/order-success/order-success.page';
+import { OrderFailedPage } from './features/order/pages/order-failed/order-failed.page';
+import { OtpDialogComponent } from './features/order/components/otp-dialog/otp-dialog.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +44,7 @@ import {NgEventBus} from "ng-event-bus";
     ProductDetailsComponent,
     CategoriesPage,
     CartPage,
-    PaymentPage,
+    PaymentComponent,
     AboutPage
   ],
   imports: [
@@ -52,7 +55,10 @@ import {NgEventBus} from "ng-event-bus";
     AppRoutingModule,
     CommonModule,
     NavigationComponent,
-    SearchBoxComponent
+    SearchBoxComponent,
+    OrderSuccessPage,
+    OrderFailedPage,
+    OtpDialogComponent
   ],
   providers: [NgEventBus],
   bootstrap: [AppComponent]
