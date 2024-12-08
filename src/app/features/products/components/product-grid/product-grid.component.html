@@ -1,57 +1,75 @@
 <section class="bg-cyber-surface py-4">
     <div class="container-content">
-        <!-- Empty Products -->
-        <div *ngIf="products?.length === 0 && !loading" class="text-center py-8 sm:py-12">
-            <h2 class="text-lg sm:text-xl font-semibold mb-2 text-cyber-text-primary">لا يوجد منتجات لهذا الصنف</h2>
-            <a (click)="loadProducts();" class="inline-block bg-cyber-accent-primary text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-cyber-hover-primary transition-colors">
-                تصفح كل المنتجات
-            </a>
+        <!-- Loading State -->
+        <div *ngIf="loading" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
+            <div *ngFor="let i of [1,2,3,4,5,6,7,8]" 
+                 class="bg-cyber-card rounded-lg p-3 sm:p-4 animate-pulse">
+                <div class="aspect-square mb-2 bg-cyber-surface rounded-lg"></div>
+                <div class="h-4 bg-cyber-surface rounded w-3/4 mx-auto mb-4"></div>
+                <div class="grid grid-cols-3 gap-1">
+                    <div *ngFor="let j of [1,2,3]" class="h-6 bg-cyber-surface rounded"></div>
+                </div>
+            </div>
         </div>
-        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
-            <ng-container *ngIf="!loading && !error">
-                <a *ngFor="let product of products"
-                   [routerLink]="['/product', product.uuid]"
-                   class="group bg-cyber-card rounded-lg p-3 sm:p-4 transition-all hover:shadow-card-hover relative">
 
-                    <!-- Region Flags -->
-                    <div class="absolute top-2 left-2 flex gap-1 z-10">
-                        <img *ngFor="let region of product.regions"
-                             [src]="region.flag"
-                             [alt]="region.name"
-                             class="w-4 h-4 sm:w-6 sm:h-6 rounded-full border-2 border-cyber-border shadow-sm"
-                             loading="lazy">
+        <!-- Error State -->
+        <div *ngIf="error" class="py-8">
+            <app-error-message [message]="error"></app-error-message>
+        </div>
+
+        <!-- Empty Products -->
+        <div *ngIf="!loading && !error && products.length === 0" class="text-center py-8 sm:py-12">
+            <h2 class="text-lg sm:text-xl font-semibold mb-4 text-cyber-text-primary">لا يوجد منتجات لهذا الصنف</h2>
+            <button (click)="loadProducts()" 
+                    class="inline-block bg-cyber-accent-primary text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-cyber-hover-primary transition-colors">
+                تصفح كل المنتجات
+            </button>
+        </div>
+
+        <!-- Products Grid -->
+        <div *ngIf="!loading && !error && products.length > 0" 
+             class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
+            <a *ngFor="let product of products"
+               [routerLink]="['/product', product.uuid]"
+               class="group bg-cyber-card rounded-lg p-3 sm:p-4 transition-all hover:shadow-card-hover relative">
+                <!-- Region Flags -->
+                <div class="absolute top-2 left-2 flex gap-1 z-10">
+                    <img *ngFor="let region of product.regions"
+                         [src]="region.flag"
+                         [alt]="region.name"
+                         class="w-4 h-4 sm:w-6 sm:h-6 rounded-full border-2 border-cyber-border shadow-sm"
+                         loading="lazy">
+                </div>
+
+                <!-- Product Image -->
+                <div class="aspect-square mb-2 flex items-center justify-center">
+                    <img [src]="product.image"
+                         [alt]="product.name"
+                         (error)="handleImageError($event)"
+                         class="w-full h-full object-contain p-2 sm:p-4">
+                </div>
+
+                <!-- Product Name -->
+                <h3 class="text-xs sm:text-sm font-medium text-cyber-text-primary text-center line-clamp-2 mb-2">
+                    {{product.name}}
+                </h3>
+
+                <!-- Prices Grid -->
+                <div class="grid grid-cols-3 gap-1">
+                    <div *ngFor="let price of product.prices.slice(0, 3)"
+                         class="text-[10px] sm:text-xs border border-cyber-border rounded px-1 sm:px-2 py-1 text-center hover:border-cyber-accent-primary transition-colors text-cyber-text-secondary">
+                        {{price.amount}}
                     </div>
+                </div>
 
-                    <!-- Product Image -->
-                    <div class="aspect-square mb-2 flex items-center justify-center">
-                        <img [src]="product.image"
-                             [alt]="product.name"
-                             (error)="handleImageError($event)"
-                             class="w-full h-full object-contain p-2 sm:p-4">
+                <!-- Additional Prices -->
+                <div *ngIf="product.additionalPrices?.length" class="grid grid-cols-2 gap-1 mt-1">
+                    <div *ngFor="let price of product.additionalPrices"
+                         class="text-[10px] sm:text-xs border border-cyber-border rounded px-1 sm:px-2 py-1 text-center hover:border-cyber-accent-primary transition-colors text-cyber-text-secondary">
+                        {{price.amount}}
                     </div>
-
-                    <!-- Product Name -->
-                    <h3 class="text-xs sm:text-sm font-medium text-cyber-text-primary text-center line-clamp-2 mb-2">
-                        {{product.name}}
-                    </h3>
-
-                    <!-- Prices Grid -->
-                    <div class="grid grid-cols-3 gap-1">
-                        <div *ngFor="let price of product.prices.slice(0, 3)"
-                             class="text-[10px] sm:text-xs border border-cyber-border rounded px-1 sm:px-2 py-1 text-center hover:border-cyber-accent-primary transition-colors text-cyber-text-secondary">
-                            {{price.amount}}
-                        </div>
-                    </div>
-
-                    <!-- Additional Prices -->
-                    <div *ngIf="product.additionalPrices?.length" class="grid grid-cols-2 gap-1 mt-1">
-                        <div *ngFor="let price of product.additionalPrices"
-                             class="text-[10px] sm:text-xs border border-cyber-border rounded px-1 sm:px-2 py-1 text-center hover:border-cyber-accent-primary transition-colors text-cyber-text-secondary">
-                            {{price.amount}}
-                        </div>
-                    </div>
-                </a>
-            </ng-container>
+                </div>
+            </a>
         </div>
     </div>
 </section>

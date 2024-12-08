@@ -1,7 +1,46 @@
 <section class="bg-cyber-surface">
     <div class="container-content py-4 sm:py-8">
-        <div class="flex justify-center">
+        <!-- Loading State -->
+        <div *ngIf="loading" class="flex justify-center">
             <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-9 gap-2 sm:gap-4">
+                <div *ngFor="let i of [1,2,3,4,5,6,7,8]"
+                     class="animate-pulse">
+                    <div class="w-full sm:w-[120px] h-[90px] sm:h-[120px] bg-cyber-card rounded-lg flex flex-col items-center justify-center p-2 sm:p-4">
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 bg-cyber-surface rounded-full mb-1 sm:mb-2"></div>
+                        <div class="h-3 bg-cyber-surface rounded w-2/3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error State -->
+        <div *ngIf="error" class="py-8">
+            <app-error-message [message]="error"></app-error-message>
+        </div>
+
+        <!-- Categories Grid -->
+        <div *ngIf="!loading && !error" class="flex justify-center">
+            <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-9 gap-2 sm:gap-4">
+                <!-- All Categories Button (First) -->
+                <div>
+                    <button
+                            type="button"
+                            class="category-button w-full sm:w-[120px] h-[90px] sm:h-[120px]"
+                            (click)="selectCategory(0)"
+                            [ngClass]="{'highlighted-category': selectedCategory === 0}"
+                    >
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-cyber-accent-primary bg-opacity-10 flex items-center justify-center mb-1 sm:mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6 text-cyber-accent-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+                            </svg>
+                        </div>
+                        <h1 class="category-title text-xs sm:text-sm">
+                            كل التصنيفات
+                        </h1>
+                    </button>
+                </div>
+
+                <!-- Category Buttons -->
                 <div *ngFor="let category of categories">
                     <button
                             type="button"
@@ -21,25 +60,6 @@
                         >
                         <h1 class="category-title text-xs sm:text-sm line-clamp-2">
                             {{category.name}}
-                        </h1>
-                    </button>
-                </div>
-
-                <!-- All Categories Button -->
-                <div>
-                    <button
-                            type="button"
-                            class="category-button w-full sm:w-[120px] h-[90px] sm:h-[120px]"
-                            (click)="selectCategory(0)"
-                            [ngClass]="{'highlighted-category': selectedCategory === 0}"
-                    >
-                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-cyber-accent-primary bg-opacity-10 flex items-center justify-center mb-1 sm:mb-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6 text-cyber-accent-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
-                            </svg>
-                        </div>
-                        <h1 class="category-title text-xs sm:text-sm">
-                            كل التصنيفات
                         </h1>
                     </button>
                 </div>
