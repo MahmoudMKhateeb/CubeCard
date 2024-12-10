@@ -5,8 +5,8 @@
             <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-9 gap-2 sm:gap-4">
                 <div *ngFor="let i of [1,2,3,4,5,6,7,8]"
                      class="animate-pulse">
-                    <div class="w-full sm:w-[120px] h-[90px] sm:h-[120px] bg-cyber-card rounded-lg flex flex-col items-center justify-center p-2 sm:p-4">
-                        <div class="w-8 h-8 sm:w-10 sm:h-10 bg-cyber-surface rounded-full mb-1 sm:mb-2"></div>
+                    <div class="category-button bg-cyber-card">
+                        <div class="category-icon bg-cyber-surface rounded-full"></div>
                         <div class="h-3 bg-cyber-surface rounded w-2/3"></div>
                     </div>
                 </div>
@@ -25,18 +25,18 @@
                 <div>
                     <button
                             type="button"
-                            class="category-button w-full sm:w-[120px] h-[90px] sm:h-[120px]"
+                            class="category-button"
                             (click)="selectCategory(0)"
                             [ngClass]="{'highlighted-category': selectedCategory === 0}"
                     >
-                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-cyber-accent-primary bg-opacity-10 flex items-center justify-center mb-1 sm:mb-2">
+                        <div class="category-icon rounded-full bg-cyber-accent-primary bg-opacity-10 flex items-center justify-center">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6 text-cyber-accent-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
                             </svg>
                         </div>
-                        <h1 class="category-title text-xs sm:text-sm">
+                        <span class="category-title">
                             كل التصنيفات
-                        </h1>
+                        </span>
                     </button>
                 </div>
 
@@ -45,7 +45,7 @@
                     <button
                             type="button"
                             [routerLink]="category.link"
-                            class="category-button w-full sm:w-[120px] h-[90px] sm:h-[120px]"
+                            class="category-button"
                             (click)="selectCategory(category.id)"
                             [ngClass]="{'highlighted-category': selectedCategory === category.id}"
                     >
@@ -53,14 +53,12 @@
                                 [src]="category.icon"
                                 [alt]="category.name"
                                 loading="lazy"
-                                width="32"
-                                height="32"
-                                class="w-8 h-8 sm:w-10 sm:h-10 mb-1 sm:mb-2 category-icon"
+                                class="category-icon"
                                 draggable="false"
                         >
-                        <h1 class="category-title text-xs sm:text-sm line-clamp-2">
+                        <span class="category-title">
                             {{category.name}}
-                        </h1>
+                        </span>
                     </button>
                 </div>
             </div>
