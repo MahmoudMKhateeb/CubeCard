@@ -18,7 +18,6 @@ import { ProductCardComponent } from './features/products/components/product-car
 import { HomePage } from './features/home/pages/home.page';
 import { CategoriesPage } from './features/categories/pages/categories.page';
 import { CartPage } from './features/cart/pages/cart.page';
-import { PaymentComponent } from './features/payment/pages/payment.component';
 import { AboutPage } from './features/about/pages/about.page';
 
 // Standalone Components
@@ -42,7 +41,6 @@ import { ProductDetailsComponent } from './features/products/pages/product-detai
     HomePage,
     CategoriesPage,
     CartPage,
-    PaymentComponent,
     AboutPage
   ],
   imports: [

@@ -18,22 +18,14 @@
 
                     <div class="space-y-4">
                         <!-- Phone Number -->
-                        <div>
-                            <label class="block text-sm font-medium text-cyber-text-primary mb-1">
-                                رقم الجوال
-                                <span class="text-red-500">*</span>
-                            </label>
-                            <div class="flex">
-                                <select class="rounded-r-lg border border-cyber-border px-3 py-2 bg-cyber-surface text-cyber-text-primary">
-                                    <option value="+966">+966</option>
-                                </select>
-                                <input
-                                        type="tel"
-                                        placeholder="5xxxxxxxx"
-                                        class="flex-1 rounded-l-lg border border-r-0 border-cyber-border px-4 py-2 bg-cyber-surface text-cyber-text-primary focus:outline-none focus:ring-2 focus:ring-cyber-accent-primary"
-                                >
-                            </div>
-                        </div>
+                        <app-phone-input
+                            [(value)]="form.phone"
+                            [error]="errors.phone"
+                            [touched]="touched['phone']"
+                            [isVerified]="verificationService.isPhoneVerified(form.phone)"
+                            (blur)="onFieldBlur('phone')"
+                            (verify)="startVerification()"
+                        ></app-phone-input>
 
                         <!-- Name Fields -->
                         <div class="grid grid-cols-2 gap-4">
@@ -43,10 +35,15 @@
                                     <span class="text-red-500">*</span>
                                 </label>
                                 <input
-                                        type="text"
-                                        placeholder="مثال: أحمد"
-                                        class="w-full rounded-lg border border-cyber-border px-4 py-2 bg-cyber-surface text-cyber-text-primary focus:outline-none focus:ring-2 focus:ring-cyber-accent-primary"
+                                    type="text"
+                                    [(ngModel)]="form.firstName"
+                                    (blur)="onFieldBlur('firstName')"
+                                    placeholder="مثال: أحمد"
+                                    [class]="'w-full rounded-lg border px-4 py-2 bg-cyber-surface text-cyber-text-primary focus:outline-none focus:ring-2 focus:ring-cyber-accent-primary ' + (touched['firstName'] && errors.firstName ? 'border-red-500' : 'border-cyber-border')"
                                 >
+                                <span *ngIf="touched['firstName'] && errors.firstName" class="error-message">
+                                    {{errors.firstName}}
+                                </span>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-cyber-text-primary mb-1">
@@ -54,10 +51,15 @@
                                     <span class="text-red-500">*</span>
                                 </label>
                                 <input
-                                        type="text"
-                                        placeholder="مثال: العائلة"
-                                        class="w-full rounded-lg border border-cyber-border px-4 py-2 bg-cyber-surface text-cyber-text-primary focus:outline-none focus:ring-2 focus:ring-cyber-accent-primary"
+                                    type="text"
+                                    [(ngModel)]="form.lastName"
+                                    (blur)="onFieldBlur('lastName')"
+                                    placeholder="مثال: العائلة"
+                                    [class]="'w-full rounded-lg border px-4 py-2 bg-cyber-surface text-cyber-text-primary focus:outline-none focus:ring-2 focus:ring-cyber-accent-primary ' + (touched['lastName'] && errors.lastName ? 'border-red-500' : 'border-cyber-border')"
                                 >
+                                <span *ngIf="touched['lastName'] && errors.lastName" class="error-message">
+                                    {{errors.lastName}}
+                                </span>
                             </div>
                         </div>
 
@@ -68,10 +70,15 @@
                                 <span class="text-red-500">*</span>
                             </label>
                             <input
-                                    type="email"
-                                    placeholder="example@email.com"
-                                    class="w-full rounded-lg border border-cyber-border px-4 py-2 bg-cyber-surface text-cyber-text-primary focus:outline-none focus:ring-2 focus:ring-cyber-accent-primary"
+                                type="email"
+                                [(ngModel)]="form.email"
+                                (blur)="onFieldBlur('email')"
+                                placeholder="example@email.com"
+                                [class]="'w-full rounded-lg border px-4 py-2 bg-cyber-surface text-cyber-text-primary focus:outline-none focus:ring-2 focus:ring-cyber-accent-primary ' + (touched['email'] && errors.email ? 'border-red-500' : 'border-cyber-border')"
                             >
+                            <span *ngIf="touched['email'] && errors.email" class="error-message">
+                                {{errors.email}}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -81,36 +88,19 @@
                     <h2 class="text-xl font-semibold mb-6 text-cyber-text-primary">وسائل الدفع</h2>
 
                     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-                        <button class="payment-method-button">
-                            <img src="https://app.rasseed.com/files/visadc8ffe.png" alt="URPAY" class="h-8">
-                            <span class="text-cyber-text-primary">URPAY</span>
-                        </button>
-
-                        <button class="payment-method-button">
-                            <img src="https://app.rasseed.com/files/visadc8ffe.png" alt="مدى" class="h-8">
-                            <span class="text-cyber-text-primary">مدى</span>
-                        </button>
-
-                        <button class="payment-method-button">
-                            <img src="https://app.rasseed.com/files/visadc8ffe.png" alt="Visa" class="h-8">
-                            <span class="text-cyber-text-primary">Visa</span>
-                        </button>
-
-                        <button class="payment-method-button selected">
-                            <img src="https://app.rasseed.com/files/visadc8ffe.png" alt="Apple Pay" class="h-8">
-                            <span class="text-cyber-text-primary">Apple Pay</span>
-                        </button>
-
-                        <button class="payment-method-button">
-                            <img src="https://app.rasseed.com/files/visadc8ffe.png" alt="STC Pay" class="h-8">
-                            <span class="text-cyber-text-primary">STC Pay</span>
-                        </button>
-
-                        <button class="payment-method-button">
-                            <img src="https://app.rasseed.com/files/visadc8ffe.png" alt="Master Card" class="h-8">
-                            <span class="text-cyber-text-primary">Master Card</span>
+                        <button 
+                            *ngFor="let method of paymentMethods"
+                            (click)="selectPaymentMethod(method.id)"
+                            [class]="'payment-method-button ' + (form.paymentMethod === method.id ? 'selected' : '')"
+                        >
+                            <img [src]="method.icon" [alt]="method.name">
+                            <span>{{method.name}}</span>
                         </button>
                     </div>
+
+                    <span *ngIf="touched['paymentMethod'] && errors.paymentMethod" class="error-message block mt-2">
+                        {{errors.paymentMethod}}
+                    </span>
                 </div>
             </div>
 
@@ -122,31 +112,16 @@
                 <div class="space-y-4 mb-6">
                     <div *ngFor="let item of cartService.getCartItems() | async" class="flex gap-4 items-start">
                         <img
-                                [src]="item.product.image"
-                                [alt]="item.product.name"
-                                class="w-16 h-16 object-contain rounded-lg bg-cyber-surface p-2"
-                                (error)="handleImageError($event)"
+                            [src]="item.product.image"
+                            [alt]="item.product.name"
+                            class="w-16 h-16 object-contain rounded-lg bg-cyber-surface p-2"
+                            (error)="handleImageError($event)"
                         >
                         <div class="flex-1">
                             <h3 class="font-medium text-cyber-text-primary">{{item.product.name}}</h3>
                             <div class="text-cyber-text-secondary">السعر: {{item.selectedPrice.amount}} {{item.selectedPrice.currency}}</div>
                             <div class="text-cyber-text-secondary">الكمية: {{item.quantity}}</div>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Discount Code -->
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-cyber-text-primary mb-2">كود الخصم</label>
-                    <div class="flex gap-2">
-                        <input
-                                type="text"
-                                placeholder="xxxxx"
-                                class="flex-1 rounded-lg border border-cyber-border px-4 py-2 bg-cyber-surface text-cyber-text-primary focus:outline-none focus:ring-2 focus:ring-cyber-accent-primary"
-                        >
-                        <button class="bg-cyber-accent-primary text-white px-6 py-2 rounded-lg hover:bg-cyber-hover-primary transition-colors">
-                            فحص الكود
-                        </button>
                     </div>
                 </div>
 
@@ -160,10 +135,23 @@
                 </div>
 
                 <!-- Checkout Button -->
-                <button (click)="processPayment()" class="w-full bg-cyber-accent-primary text-white py-3 rounded-lg mt-6 hover:bg-cyber-hover-primary transition-colors">
-                    الانتقال للدفع
+                <button 
+                    (click)="processPayment()"
+                    class="w-full bg-cyber-accent-primary text-white py-3 rounded-lg mt-6 hover:bg-cyber-hover-primary transition-colors"
+                    [disabled]="!isFormValid() || isProcessing"
+                    [class.opacity-50]="!isFormValid() || isProcessing"
+                >
+                    <span *ngIf="!isProcessing">إتمام الطلب</span>
+                    <span *ngIf="isProcessing">جاري معالجة الطلب...</span>
                 </button>
             </div>
         </div>
     </div>
+
+    <!-- Phone Verification Dialog -->
+    <app-phone-verification-dialog
+        *ngIf="showVerificationDialog"
+        [phone]="form.phone"
+        (verified)="onPhoneVerified()"
+    ></app-phone-verification-dialog>
 </div>

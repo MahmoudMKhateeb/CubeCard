@@ -3,6 +3,8 @@ import { BehaviorSubject, Observable, interval, of } from 'rxjs';
 import { delay, map, startWith, switchMap, takeWhile } from 'rxjs/operators';
 import { mockOrders } from '../data/mock-orders';
 import { OrderStatus, OrderStatusType } from '../types/order.types';
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {AppConstants} from "../../../app.constants";
 
 @Injectable({
   providedIn: 'root'
@@ -10,13 +12,15 @@ import { OrderStatus, OrderStatusType } from '../types/order.types';
 export class OrderStatusService {
   private orderStatusSubject = new BehaviorSubject<OrderStatus | null>(null);
   private otpVerifiedSubject = new BehaviorSubject<boolean>(false);
-  
+
   private statusProgression: Record<OrderStatusType, OrderStatusType | null> = {
     'pending': 'processing',
     'processing': 'completed',
     'completed': null,
     'failed': null
   };
+
+  constructor(private http: HttpClient) {}
   
   getOrderStatus(orderId: string): Observable<OrderStatus> {
     return interval(5000).pipe(
@@ -76,5 +80,35 @@ export class OrderStatusService {
 
   updateOrderStatus(status: OrderStatus): void {
     this.orderStatusSubject.next(status);
+  }
+   apiUrl = AppConstants.apiUrl;
+  orderData = {
+    customer_phone: '123456789',
+    customer_name: 'John Doe',
+    customer_email: 'john@example.com',
+    status: 'inProgress', // Default status
+    cart_items: [
+      {
+        product_uuid: 'e2337887-e580-44bb-a1c1-d28f7a04ba05',
+        quantity: 4,
+        price: 100,
+        region: 'KSA',
+        currency: 'SAR',
+      },
+    ],
+    total_amount: 200,
+    payment_method: 'Visa',
+    order_notes: 'Test order',
+  };
+
+  createOrder(orderData: any) {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    });
+
+     this.http.post(this.apiUrl+'orders', this.orderData, { headers }).subscribe(res =>{
+      console.log(res);
+    });
   }
 }
