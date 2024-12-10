@@ -166,6 +166,7 @@ export class OrderSuccessPage implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const orderId = this.route.snapshot.paramMap.get('id');
+    console.log(orderId);
     if (orderId) {
       this.statusSubscription = this.orderStatusService.getOrderStatus(orderId)
         .subscribe({
