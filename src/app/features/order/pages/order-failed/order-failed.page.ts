@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ActivatedRoute, Router } from '@angular/router';
 import { OrderStatusService } from '../../services/order-status.service';
+import { Order } from '../../models/order.types';
 
 @Component({
   selector: 'app-order-failed',
@@ -24,28 +25,36 @@ import { OrderStatusService } from '../../services/order-status.service';
             عذراً، فشلت عملية الدفع
           </h1>
           <p class="text-cyber-text-secondary mb-6">
-            {{errorMessage}}
+            {{getErrorMessage()}}
           </p>
 
           <!-- Error Details -->
-          <div class="bg-cyber-surface rounded-lg p-4 mb-6 text-right">
-            <h2 class="text-lg font-semibold text-cyber-text-primary mb-2">تفاصيل الخطأ</h2>
-            <p class="text-cyber-text-secondary text-sm">
-              {{errorDetails}}
-            </p>
+          <div *ngIf="order" class="bg-cyber-surface rounded-lg p-4 mb-6 text-right">
+            <h2 class="text-lg font-semibold text-cyber-text-primary mb-2">تفاصيل الطلب</h2>
+            <div class="space-y-2">
+              <p class="text-cyber-text-secondary text-sm">
+                رقم الطلب: {{order.uuid}}
+              </p>
+              <p class="text-cyber-text-secondary text-sm">
+                تاريخ الطلب: {{order.created_at | date:'medium'}}
+              </p>
+              <p class="text-cyber-text-secondary text-sm">
+                المبلغ: {{order.total_amount}} ر.س
+              </p>
+            </div>
           </div>
 
           <!-- Actions -->
           <div class="flex flex-col sm:flex-row justify-center gap-4">
-            <button (click)="retryPayment()" 
+            <button (click)="retryPayment()"
                     class="px-6 py-2 bg-cyber-accent-primary text-white rounded-lg hover:bg-cyber-hover-primary transition-colors">
               إعادة المحاولة
             </button>
-            <a routerLink="/cart" 
+            <a routerLink="/cart"
                class="px-6 py-2 bg-cyber-surface text-cyber-text-primary rounded-lg hover:bg-cyber-card transition-colors">
               العودة لسلة المشتريات
             </a>
-            <button (click)="contactSupport()" 
+            <button (click)="contactSupport()"
                     class="px-6 py-2 border border-cyber-border text-cyber-text-primary rounded-lg hover:bg-cyber-surface transition-colors">
               تواصل مع الدعم
             </button>
@@ -56,24 +65,39 @@ import { OrderStatusService } from '../../services/order-status.service';
   `
 })
 export class OrderFailedPage implements OnInit {
-  orderId: string | null = null;
-  errorMessage: string = 'حدث خطأ أثناء معالجة طلبك. يرجى المحاولة مرة أخرى أو التواصل مع خدمة العملاء.';
-  errorDetails: string = 'لم نتمكن من إكمال عملية الدفع. قد يكون هناك مشكلة في البطاقة المستخدمة أو في اتصال الإنترنت.';
+  order: Order | null = null;
 
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private orderStatusService: OrderStatusService
+      private route: ActivatedRoute,
+      private router: Router,
+      private orderStatusService: OrderStatusService
   ) {}
 
   ngOnInit(): void {
-    this.orderId = this.route.snapshot.paramMap.get('id');
+    const uuid = this.route.snapshot.paramMap.get('id');
+    if (uuid) {
+      this.orderStatusService.getOrderStatus(uuid).subscribe({
+        next: (order) => {
+          this.order = order;
+        },
+        error: (error) => {
+          console.error('Error fetching order details:', error);
+        }
+      });
+    }
+  }
+
+  getErrorMessage(): string {
+    if (this.order?.status === 'contactSupport') {
+      return 'يرجى التواصل مع خدمة العملاء للمساعدة في إتمام طلبك.';
+    }
+    return 'حدث خطأ أثناء معالجة طلبك. يرجى المحاولة مرة أخرى أو التواصل مع خدمة العملاء.';
   }
 
   retryPayment(): void {
-    if (this.orderId) {
-      this.router.navigate(['/payment'], { 
-        queryParams: { retry: this.orderId } 
+    if (this.order) {
+      this.router.navigate(['/payment'], {
+        queryParams: { retry: this.order.uuid }
       });
     } else {
       this.router.navigate(['/cart']);

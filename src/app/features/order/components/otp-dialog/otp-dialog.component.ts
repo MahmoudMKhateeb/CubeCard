@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { OrderStatusService } from '../../services/order-status.service';
+import { OtpService } from '../../services/otp.service';
 
 @Component({
   selector: 'app-otp-dialog',
@@ -56,7 +56,7 @@ export class OtpDialogComponent {
   error = '';
   loading = false;
 
-  constructor(private orderStatusService: OrderStatusService) {}
+  constructor(private otpService: OtpService) {}
 
   verifyOtp(): void {
     if (this.otpCode.length !== 4) {
@@ -67,8 +67,8 @@ export class OtpDialogComponent {
     this.loading = true;
     this.error = '';
 
-    this.orderStatusService.verifyOtp(this.otpCode).subscribe({
-      next: (isValid) => {
+    this.otpService.verifyOtp(this.otpCode).subscribe({
+      next: (isValid: boolean) => {
         if (isValid) {
           this.verified.emit();
         } else {
