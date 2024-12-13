@@ -1,4 +1,4 @@
-export type OrderStatus = 'inProgress' | 'success' | 'failed' | 'onHold' | 'contactSupport';
+export type OrderStatus = 'inProgress' | 'success' | 'failed' | 'onHold' | 'contactSupport' | 'pending';
 
 export interface SerialKey {
   id: number;
@@ -41,5 +41,6 @@ export interface Order {
 export interface CreateOrderResponse {
   success: boolean;
   message: string;
-  order: Order;
+  order_uuid: string;
+  checkout_session_id: string;
 }

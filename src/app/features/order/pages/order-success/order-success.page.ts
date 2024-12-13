@@ -232,6 +232,8 @@ export class OrderSuccessPage implements OnInit, OnDestroy {
         return `${baseClasses} bg-green-500 bg-opacity-10 text-green-500`;
       case 'inProgress':
         return `${baseClasses} bg-yellow-500 bg-opacity-10 text-yellow-500`;
+      case 'pending':
+        return `${baseClasses} bg-yellow-500 bg-opacity-10 text-yellow-500`;
       case 'onHold':
         return `${baseClasses} bg-blue-500 bg-opacity-10 text-blue-500`;
       default:
@@ -246,7 +248,9 @@ export class OrderSuccessPage implements OnInit, OnDestroy {
       case 'inProgress':
         return 'قيد المعالجة';
       case 'onHold':
-        return 'قيد الانتظار';
+        return 'تحت المراجعة';
+      case 'pending':
+        return 'بانتظار الدفع';
       default:
         return 'غير معروف';
     }

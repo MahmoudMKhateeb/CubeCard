@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -10,6 +10,7 @@ import { PhoneVerificationDialogComponent } from '../components/phone-verificati
 import { PhoneInputComponent } from '../components/phone-input/phone-input.component';
 import { OrderStatusService } from '../../order/services/order-status.service';
 import { firstValueFrom } from 'rxjs';
+import {log} from "@angular-devkit/build-angular/src/builders/ssr-dev-server";
 
 @Component({
   selector: 'app-payment',
@@ -24,7 +25,7 @@ import { firstValueFrom } from 'rxjs';
     PhoneInputComponent
   ]
 })
-export class PaymentComponent {
+export class PaymentComponent implements OnInit{
   form: PaymentForm = {
     phone: '',
     firstName: '',
@@ -53,12 +54,7 @@ export class PaymentComponent {
   isProcessing = false;
 
   paymentMethods = [
-    { id: 'urpay', name: 'URPAY', icon: 'https://app.rasseed.com/files/visadc8ffe.png' },
-    { id: 'mada', name: 'مدى', icon: 'https://app.rasseed.com/files/visadc8ffe.png' },
     { id: 'visa', name: 'Visa', icon: 'https://app.rasseed.com/files/visadc8ffe.png' },
-    { id: 'apple-pay', name: 'Apple Pay', icon: 'https://app.rasseed.com/files/visadc8ffe.png' },
-    { id: 'stc-pay', name: 'STC Pay', icon: 'https://app.rasseed.com/files/visadc8ffe.png' },
-    { id: 'mastercard', name: 'Master Card', icon: 'https://app.rasseed.com/files/visadc8ffe.png' }
   ];
 
   constructor(
@@ -66,7 +62,14 @@ export class PaymentComponent {
     public verificationService: PhoneVerificationService,
     private orderStatusService: OrderStatusService,
     private router: Router
-  ) {}
+  ) {
+
+  }
+  ngOnInit() {
+    this.cartService.getCartItems().subscribe(result => {
+      result.length == 0 ? this.router.navigateByUrl('/cart') : console.log(result);
+    })
+  }
 
   handleImageError(event: Event): void {
     const img = event.target as HTMLImageElement;
@@ -138,8 +141,8 @@ export class PaymentComponent {
 
     this.validateAllFields();
     this.isProcessing = true;
-
     try {
+      this.isProcessing = true;
       const cartItems = await firstValueFrom(this.cartService.getCartItems());
       const transformedCart = cartItems.map(item => ({
         product_uuid: item.product.uuid,
@@ -153,13 +156,12 @@ export class PaymentComponent {
         customer_phone: this.form.phone,
         customer_name: `${this.form.firstName} ${this.form.lastName}`,
         customer_email: this.form.email,
-        status: 'inProgress',
+        status: 'pending',
         cart_items: transformedCart,
         total_amount: this.cartService.getTotal(),
         payment_method: this.form.paymentMethod,
         order_notes: 'Test order',
       };
-
       this.orderStatusService.createOrder(orderData);
       this.cartService.clearCart();
     } catch (error) {
@@ -169,4 +171,5 @@ export class PaymentComponent {
       this.isProcessing = false;
     }
   }
+
 }
