@@ -31,7 +31,7 @@ export class PaymentComponent implements OnInit{
     firstName: '',
     lastName: '',
     email: '',
-    paymentMethod: ''
+    paymentMethod: 'visa'
   };
 
   errors: ValidationErrors = {
