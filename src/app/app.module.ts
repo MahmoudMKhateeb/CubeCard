@@ -9,35 +9,27 @@ import { NgEventBus } from "ng-event-bus";
 
 // Components
 import { AppComponent } from './core/components/app/app.component';
-import { HeaderComponent } from './core/components/header/header.component';
-import { BannerComponent } from './features/home/components/banner/banner.component';
-import { CategoryCardComponent } from './features/categories/components/category-card/category-card.component';
-import { ProductCardComponent } from './features/products/components/product-card/product-card.component';
+import { NavigationComponent } from './core/components/navigation/navigation.component';
+import { SearchBoxComponent } from './core/components/search/components/search-box/search-box.component';
+import { BannerComponent } from './core/components/home/components/banner/banner.component';
+import { CategoryGridComponent } from './core/components/categories/components/category-grid/category-grid.component';
+import { ProductGridComponent } from './core/components/products/components/product-grid/product-grid.component';
+import { FooterComponent } from './core/components/footer/footer.component';
+import { ProductDetailsComponent } from './core/components/products/pages/product-details/product-details.component';
+import { MobileDownloadButtonComponent } from './core/components/shared/components/mobile-download-button/mobile-download-button.component';
 
 // Pages
-import { HomePage } from './features/home/pages/home.page';
-import { CategoriesPage } from './features/categories/pages/categories.page';
-import { CartPage } from './features/cart/pages/cart.page';
-import { AboutPage } from './features/about/pages/about.page';
-
-// Standalone Components
-import { NavigationComponent } from './core/components/navigation/navigation.component';
-import { SearchBoxComponent } from './features/search/components/search-box/search-box.component';
-import { OrderSuccessPage } from './features/order/pages/order-success/order-success.page';
-import { OrderFailedPage } from './features/order/pages/order-failed/order-failed.page';
-import { OtpDialogComponent } from './features/order/components/otp-dialog/otp-dialog.component';
-import { ProductGridComponent } from './features/products/components/product-grid/product-grid.component';
-import { CategoryGridComponent } from './features/categories/components/category-grid/category-grid.component';
-import { FooterComponent } from './core/components/footer/footer.component';
-import { ProductDetailsComponent } from './features/products/pages/product-details/product-details.component';
+import { HomePage } from './core/components/home/pages/home.page';
+import { CategoriesPage } from './core/components/categories/pages/categories.page';
+import { CartPage } from './core/components/cart/pages/cart.page';
+import { AboutPage } from './core/components/about/pages/about.page';
+import { OrderSuccessPage } from './core/components/order/pages/order-success/order-success.page';
+import { OrderFailedPage } from './core/components/order/pages/order-failed/order-failed.page';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HeaderComponent,
     BannerComponent,
-    CategoryCardComponent,
-    ProductCardComponent,
     HomePage,
     CategoriesPage,
     CartPage,
@@ -55,11 +47,11 @@ import { ProductDetailsComponent } from './features/products/pages/product-detai
     SearchBoxComponent,
     OrderSuccessPage,
     OrderFailedPage,
-    OtpDialogComponent,
     ProductGridComponent,
     CategoryGridComponent,
     FooterComponent,
-    ProductDetailsComponent
+    ProductDetailsComponent,
+    MobileDownloadButtonComponent
   ],
   providers: [NgEventBus],
   bootstrap: [AppComponent]

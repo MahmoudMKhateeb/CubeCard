@@ -7,3 +7,9 @@
         transition: none;
     }
 }
+@media (prefers-reduced-motion: reduce) {
+    .transition-transform,
+    .transition-colors {
+        transition: none;
+    }
+}

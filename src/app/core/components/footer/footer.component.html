@@ -1,4 +1,4 @@
-<footer class="bg-cyber-surface border-t border-cyber-border">
+<footer class="bg-cyber-surface border-t border-cyber-border relative z-10">
     <div class="container-content">
         <!-- Main Footer Content -->
         <div class="py-12">
@@ -14,20 +14,83 @@
                 </div>
 
                 <!-- Quick Links -->
-                <app-footer-links></app-footer-links>
+                <div class="text-center md:text-right">
+                    <h3 class="text-lg font-semibold text-cyber-text-primary mb-4">روابط سريعة</h3>
+                    <div class="flex flex-col gap-3">
+                        <a routerLink="/contact" class="text-cyber-text-secondary hover:text-cyber-accent-primary transition-colors">
+                            تواصل معنا
+                        </a>
+                        <a routerLink="/returns" class="text-cyber-text-secondary hover:text-cyber-accent-primary transition-colors">
+                            سياسة الإرجاع
+                        </a>
+                        <a routerLink="/terms" class="text-cyber-text-secondary hover:text-cyber-accent-primary transition-colors">
+                            اتفاقية الاستخدام
+                        </a>
+                        <a routerLink="/privacy" class="text-cyber-text-secondary hover:text-cyber-accent-primary transition-colors">
+                            سياسة الخصوصية
+                        </a>
+                    </div>
+                </div>
 
                 <!-- Contact Info -->
-                <app-footer-contact></app-footer-contact>
+                <div class="text-center md:text-right">
+                    <h3 class="text-lg font-semibold text-cyber-text-primary mb-4">تواصل معنا</h3>
+                    <div class="flex flex-col gap-3">
+                        <a href="mailto:support@cubecard.com"
+                           class="text-cyber-text-secondary hover:text-cyber-accent-primary transition-colors">
+                            support&#64;cubecard.com
+                        </a>
+                        <a href="tel:+966500000000"
+                           class="text-cyber-text-secondary hover:text-cyber-accent-primary transition-colors">
+                            +966 50 000 0000
+                        </a>
+                        <div class="text-cyber-text-secondary">
+                            الرياض، المملكة العربية السعودية
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Download Apps -->
-                <app-download-apps></app-download-apps>
+
+                <div class="text-center md:text-right">
+                    <h3 class="text-lg font-semibold text-cyber-text-primary mb-4">حمل التطبيق</h3>
+                    <div class="flex flex-col gap-4">
+                        <!-- Google Play Button -->
+                        <a [href]="storeConfig.android.url"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="block bg-cyber-card hover:bg-cyber-surface transition-colors p-4 rounded-lg group">
+                            <img [src]="storeConfig.android.badge"
+                                 [alt]="storeConfig.android.altText"
+                                 class="h-14 w-auto mx-auto transition-transform group-hover:scale-105">
+                        </a>
+
+                        <!-- App Store Button -->
+                        <a [href]="storeConfig.ios.url"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="block bg-cyber-card hover:bg-cyber-surface transition-colors p-4 rounded-lg group">
+                            <img [src]="storeConfig.ios.badge"
+                                 [alt]="storeConfig.ios.altText"
+                                 class="h-14 w-auto mx-auto transition-transform group-hover:scale-105">
+                        </a>
+                    </div>
+                </div>
             </div>
 
             <!-- Divider -->
             <div class="border-t border-cyber-border pt-8">
                 <div class="flex flex-col md:flex-row justify-between items-center gap-6">
                     <!-- Payment Methods -->
-                    <app-footer-payment></app-footer-payment>
+                    <div class="flex flex-wrap items-center gap-4">
+                        <span class="text-cyber-text-secondary whitespace-nowrap">وسائل الدفع</span>
+                        <div class="flex flex-wrap gap-3">
+                            <img src="/assets/images/payment/visa.png" alt="Visa" class="h-8 w-auto">
+                            <img src="/assets/images/payment/mastercard.png" alt="Mastercard" class="h-8 w-auto">
+                            <img src="/assets/images/payment/mada.png" alt="Mada" class="h-8 w-auto">
+                            <img src="/assets/images/payment/stc-pay.png" alt="STC Pay" class="h-8 w-auto">
+                        </div>
+                    </div>
 
                     <!-- Copyright -->
                     <div class="text-cyber-text-secondary text-sm text-center md:text-right">

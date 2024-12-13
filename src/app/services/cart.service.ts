@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Product } from '../shared/models/product.interface';
+import { Product } from '../core/components/shared/models/product.interface';
 
 export interface CartItem {
   id: number;

@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { HomePage } from './features/home/pages/home.page';
-import { ProductDetailsComponent } from './features/products/pages/product-details/product-details.component';
-import { CategoriesPage } from './features/categories/pages/categories.page';
-import { CartPage } from './features/cart/pages/cart.page';
-import { PaymentComponent } from './features/payment/pages/payment.component';
-import { AboutPage } from './features/about/pages/about.page';
-import { OrderSuccessPage } from './features/order/pages/order-success/order-success.page';
-import { OrderFailedPage } from './features/order/pages/order-failed/order-failed.page';
+import { HomePage } from './core/components/home/pages/home.page';
+import { ProductDetailsComponent } from './core/components/products/pages/product-details/product-details.component';
+import { CategoriesPage } from './core/components/categories/pages/categories.page';
+import { CartPage } from './core/components/cart/pages/cart.page';
+import { PaymentComponent } from './core/components/payment/pages/payment.component';
+import { AboutPage } from './core/components/about/pages/about.page';
+import { OrderSuccessPage } from './core/components/order/pages/order-success/order-success.page';
+import { OrderFailedPage } from './core/components/order/pages/order-failed/order-failed.page';
 
 const routes: Routes = [
   { 

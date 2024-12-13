@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
-import { FooterLinksComponent } from './components/footer-links/footer-links.component';
-import { FooterContactComponent } from './components/footer-contact/footer-contact.component';
-import { FooterPaymentComponent } from './components/footer-payment/footer-payment.component';
-import { DownloadAppsComponent } from './components/download-apps/download-apps.component';
+
+import {StoreConfig} from "../shared/config/store-config";
+import {RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-footer',
@@ -10,12 +9,11 @@ import { DownloadAppsComponent } from './components/download-apps/download-apps.
   styleUrls: ['./footer.component.css'],
   standalone: true,
   imports: [
-    FooterLinksComponent,
-    FooterContactComponent,
-    FooterPaymentComponent,
-    DownloadAppsComponent
+    RouterLink,
   ]
 })
 export class FooterComponent {
   currentYear = new Date().getFullYear();
+  storeConfig = StoreConfig;
+
 }
