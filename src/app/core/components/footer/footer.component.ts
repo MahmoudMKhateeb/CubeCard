@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { FooterLinksComponent } from './components/footer-links/footer-links.component';
 import { FooterContactComponent } from './components/footer-contact/footer-contact.component';
-import { FooterSocialComponent } from './components/footer-social/footer-social.component';
 import { FooterPaymentComponent } from './components/footer-payment/footer-payment.component';
+import { DownloadAppsComponent } from './components/download-apps/download-apps.component';
 
 @Component({
   selector: 'app-footer',
@@ -12,8 +12,8 @@ import { FooterPaymentComponent } from './components/footer-payment/footer-payme
   imports: [
     FooterLinksComponent,
     FooterContactComponent,
-    FooterSocialComponent,
-    FooterPaymentComponent
+    FooterPaymentComponent,
+    DownloadAppsComponent
   ]
 })
 export class FooterComponent {

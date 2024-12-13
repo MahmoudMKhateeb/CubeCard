@@ -1,4 +1,4 @@
-<nav class="bg-cyber-background border-b border-cyber-border">
+<div class="bg-cyber-background border-b border-cyber-border">
     <div class="nav-container">
         <div class="nav-wrapper">
             <!-- Mobile Menu Button -->
@@ -22,29 +22,24 @@
                 </div>
             </div>
 
-            <!-- Search Bar -->
-            <div class="search-container hidden sm:block">
-                <app-search-box></app-search-box>
+            <!-- Center Section: Search -->
+            <div class="flex-1 flex items-center justify-center max-w-xl">
+                <app-search-box class="w-full"></app-search-box>
             </div>
 
-            <!-- Cart Icon -->
+            <!-- Right Section: Download & Cart -->
             <div class="flex items-center gap-4">
-                <a routerLink="/cart" class="relative">
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         class="cart-icon"
-                         fill="none"
-                         viewBox="0 0 24 24"
-                         stroke="currentColor">
-                        <path stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                <!-- Download App Button -->
+                <button (click)="openDownloadDialog()"
+                        class="hidden lg:flex items-center gap-2 bg-cyber-accent-primary bg-opacity-10 px-4 py-2 rounded-lg hover:bg-opacity-20 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
-                    <span *ngIf="(cartItemCount$ | async) && (cartItemCount$ | async)! > 0"
-                          class="cart-badge">
-                        {{cartItemCount$ | async}}
-                    </span>
-                </a>
+                    <span>حمل التطبيق</span>
+                </button>
+
+                <!-- Cart Icon -->
+                <app-cart-icon></app-cart-icon>
             </div>
         </div>
 
@@ -65,7 +60,20 @@
                    class="block py-2 text-cyber-text-primary hover:text-cyber-accent-primary">
                     عن كيوب كارد
                 </a>
+                <!-- Mobile Download App Button -->
+                <button (click)="openDownloadDialog()"
+                        class="flex items-center gap-2 py-2 text-cyber-text-primary hover:text-cyber-accent-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    <span>حمل التطبيق</span>
+                </button>
             </div>
         </div>
     </div>
-</nav>
+
+    <!-- Download App Dialog -->
+    <app-download-app-dialog *ngIf="showDownloadDialog"
+                            (closed)="closeDownloadDialog()">
+    </app-download-app-dialog>
+</div>
