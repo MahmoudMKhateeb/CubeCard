@@ -7,6 +7,7 @@ import { OtpService } from '../../services/otp.service';
 import { Order } from '../../models/order.types';
 import { Subscription } from 'rxjs';
 import { OtpDialogComponent } from '../../components/otp-dialog/otp-dialog.component';
+import {CartService} from "../../../../../services/cart.service";
 
 @Component({
   selector: 'app-order-success',
@@ -155,7 +156,8 @@ export class OrderSuccessPage implements OnInit, OnDestroy {
       private route: ActivatedRoute,
       private router: Router,
       private orderStatusService: OrderStatusService,
-      private otpService: OtpService
+      private otpService: OtpService,
+      private cartService: CartService
   ) {}
 
   intervalId: any; // Declare intervalId as a class property
@@ -196,6 +198,7 @@ export class OrderSuccessPage implements OnInit, OnDestroy {
         .subscribe(verified => {
           this.isOtpVerified = verified;
         });
+    this.cartService.clearCart();
   }
   ngOnDestroy(): void {
     if (this.statusSubscription) {
@@ -204,6 +207,7 @@ export class OrderSuccessPage implements OnInit, OnDestroy {
     if (this.otpSubscription) {
       this.otpSubscription.unsubscribe();
     }
+    clearInterval(this.intervalId);
   }
 
   viewSerial(item: any): void {

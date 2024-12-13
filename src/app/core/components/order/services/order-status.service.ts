@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, Subscription, interval } from 'rxjs';
 import { switchMap, takeWhile, catchError } from 'rxjs/operators';
 import { OrderApiService } from './order-api.service';
 import {CreateOrderResponse, Order, OrderStatus} from '../models/order.types';
+import {CartService} from "../../../../services/cart.service";
 
 @Injectable({
   providedIn: 'root'
