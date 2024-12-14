@@ -71,7 +71,7 @@ export class CartService {
   }
 
   updateQuantity(itemId: number, quantity: number): void {
-    if (quantity < 1 || quantity > 5) return;
+    if (quantity < 1 || quantity > 1) return;
 
     const currentItems = this.cartItems.getValue();
     const newItems = currentItems.map(item =>

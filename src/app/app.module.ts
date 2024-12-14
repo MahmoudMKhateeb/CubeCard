@@ -23,7 +23,7 @@ import { HomePage } from './core/components/home/pages/home.page';
 import { CategoriesPage } from './core/components/categories/pages/categories.page';
 import { CartPage } from './core/components/cart/pages/cart.page';
 import { AboutPage } from './core/components/about/pages/about.page';
-import { OrderSuccessPage } from './core/components/order/pages/order-success/order-success.page';
+import { OrderSuccessComponent } from './core/components/order/pages/order-success/order-success.component';
 import { OrderFailedPage } from './core/components/order/pages/order-failed/order-failed.page';
 
 @NgModule({
@@ -45,7 +45,7 @@ import { OrderFailedPage } from './core/components/order/pages/order-failed/orde
     // Standalone Components
     NavigationComponent,
     SearchBoxComponent,
-    OrderSuccessPage,
+    OrderSuccessComponent,
     OrderFailedPage,
     ProductGridComponent,
     CategoryGridComponent,

@@ -7,7 +7,7 @@ import { CategoriesPage } from './core/components/categories/pages/categories.pa
 import { CartPage } from './core/components/cart/pages/cart.page';
 import { PaymentComponent } from './core/components/payment/pages/payment.component';
 import { AboutPage } from './core/components/about/pages/about.page';
-import { OrderSuccessPage } from './core/components/order/pages/order-success/order-success.page';
+import { OrderSuccessComponent } from './core/components/order/pages/order-success/order-success.component';
 import { OrderFailedPage } from './core/components/order/pages/order-failed/order-failed.page';
 
 const routes: Routes = [
@@ -43,7 +43,7 @@ const routes: Routes = [
   },
   {
     path: 'order/success/:id',
-    component: OrderSuccessPage,
+    component: OrderSuccessComponent,
     title: 'تم الطلب بنجاح'
   },
   {
