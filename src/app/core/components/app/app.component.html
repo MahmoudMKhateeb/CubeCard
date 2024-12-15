@@ -1,12 +1,14 @@
-<div class="min-h-screen bg-cyber-surface" dir="rtl">
-  <app-navigation></app-navigation>
-  <main>
-    <ng-container *ngIf="isHomePage">
-      <app-banner></app-banner>
-      <app-category-grid></app-category-grid>
-    </ng-container>
-    <router-outlet></router-outlet>
-  </main>
-  <app-footer></app-footer>
-  <app-mobile-download-button></app-mobile-download-button>
-</div>
+<ion-app>
+    <div class="min-h-screen bg-cyber-surface" dir="rtl">
+        <app-navigation></app-navigation>
+        <main>
+            <ng-container *ngIf="isHomePage">
+                <app-banner></app-banner>
+                <app-category-grid></app-category-grid>
+            </ng-container>
+            <router-outlet></router-outlet>
+        </main>
+        <app-footer></app-footer>
+        <app-mobile-download-button></app-mobile-download-button>
+    </div>
+</ion-app>

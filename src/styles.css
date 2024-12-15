@@ -9,6 +9,25 @@
 
   body {
     @apply bg-cyber-background text-cyber-text-primary;
+    position: relative;
+    height: auto;
+    min-height: 100%;
+    overflow-y: auto !important;
+  }
+
+  html {
+    height: 100%;
+    width: 100%;
+    overflow: auto !important;
+  }
+
+  /* Override Ionic's default scrolling behavior */
+  ion-content {
+    --overflow: auto;
+  }
+
+  ion-content::part(scroll) {
+    overflow-y: auto !important;
   }
 }
 
@@ -79,4 +98,23 @@
   .transition-shadow {
     transition: none;
   }
+}
+
+/* Override Ionic's default styles */
+:root {
+  --ion-safe-area-top: 0px;
+  --ion-safe-area-bottom: 0px;
+  --ion-safe-area-left: 0px;
+  --ion-safe-area-right: 0px;
+}
+
+.ion-page {
+  position: relative !important;
+  contain: none !important;
+  overflow: visible !important;
+}
+
+ion-app {
+  position: relative !important;
+  overflow: visible !important;
 }

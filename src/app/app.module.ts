@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AppRoutingModule } from './app-routing.module';
 import { NgEventBus } from "ng-event-bus";
+import { IonicModule } from '@ionic/angular';
 
 // Components
 import { AppComponent } from './core/components/app/app.component';
@@ -42,6 +43,7 @@ import { OrderFailedPage } from './core/components/order/pages/order-failed/orde
     RouterModule,
     AppRoutingModule,
     CommonModule,
+    IonicModule.forRoot(),
     // Standalone Components
     NavigationComponent,
     SearchBoxComponent,
