@@ -1,14 +1,16 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { StoreConfig } from '../../config/store-config';
+import { PlatformDetectionService } from '../../services/platform-detection.service';
 
 @Component({
   selector: 'app-download-app-dialog',
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    <div *ngIf="!isAppUser" 
+         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
          [@fadeIn]>
       <div class="bg-cyber-card rounded-lg p-6 max-w-md w-full mx-4 shadow-lg"
            [@slideIn]>
@@ -76,9 +78,18 @@ import { StoreConfig } from '../../config/store-config';
     ])
   ]
 })
-export class DownloadAppDialogComponent {
+export class DownloadAppDialogComponent implements OnInit {
   @Output() closed = new EventEmitter<void>();
   storeConfig = StoreConfig;
+  isAppUser = false;
+
+  constructor(private platformDetection: PlatformDetectionService) {}
+
+  ngOnInit(): void {
+    this.platformDetection.isAppUser$.subscribe(
+      isApp => this.isAppUser = isApp
+    );
+  }
 
   openStore(platform: 'android' | 'ios'): void {
     window.open(this.storeConfig[platform].url, '_blank');

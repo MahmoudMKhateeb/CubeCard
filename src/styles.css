@@ -7,6 +7,24 @@
     font-family: 'Cairo', sans-serif;
   }
 
+  /* Scrollbar Styling */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-cyber-surface;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-cyber-border rounded-full transition-colors;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-cyber-accent-primary;
+  }
+
   body {
     @apply bg-cyber-background text-cyber-text-primary;
     position: relative;
@@ -96,6 +114,10 @@
   .transition-colors,
   .transition-transform,
   .transition-shadow {
+    transition: none;
+  }
+
+  ::-webkit-scrollbar-thumb {
     transition: none;
   }
 }

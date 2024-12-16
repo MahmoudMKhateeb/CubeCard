@@ -1,16 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StoreConfig } from '../../config/store-config';
+import { PlatformDetectionService } from '../../services/platform-detection.service';
 
 @Component({
   selector: 'app-mobile-download-button',
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="fixed bottom-0 left-0 right-0 z-50 block sm:hidden">
+    <div *ngIf="!isAppUser" 
+         class="sticky bottom-0 left-0 right-0 z-50 block sm:hidden p-4 bg-gradient-to-t from-cyber-background">
       <button 
         (click)="openDownloadDialog()"
-        class="w-full bg-[#6C3BF7] text-white py-4 flex items-center justify-center gap-2 hover:bg-[#5B32D6] transition-colors shadow-lg"
+        class="w-full bg-cyber-accent-primary text-white py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-cyber-hover-primary transition-colors shadow-lg"
       >
         <svg xmlns="http://www.w3.org/2000/svg" 
              class="h-5 w-5" 
@@ -25,9 +27,26 @@ import { StoreConfig } from '../../config/store-config';
         <span class="text-lg font-medium">حمل التطبيق</span>
       </button>
     </div>
-  `
+  `,
+  styles: [`
+    @media (prefers-reduced-motion: reduce) {
+      .transition-colors {
+        transition: none;
+      }
+    }
+  `]
 })
-export class MobileDownloadButtonComponent {
+export class MobileDownloadButtonComponent implements OnInit {
+  isAppUser = false;
+
+  constructor(private platformDetection: PlatformDetectionService) {}
+
+  ngOnInit(): void {
+    this.platformDetection.isAppUser$.subscribe(
+      isApp => this.isAppUser = isApp
+    );
+  }
+
   openDownloadDialog(): void {
     const userAgent = navigator.userAgent.toLowerCase();
     if (userAgent.includes('android')) {
