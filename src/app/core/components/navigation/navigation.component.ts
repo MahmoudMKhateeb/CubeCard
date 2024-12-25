@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { SearchBoxComponent } from '../search/components/search-box/search-box.component';
 import { CartIconComponent } from './components/cart-icon/cart-icon.component';
 import { DownloadAppDialogComponent } from '../shared/components/download-app-dialog/download-app-dialog.component';
+import { AuthIndicatorComponent } from '../auth/components/auth-indicator/auth-indicator.component';
 
 @Component({
   selector: 'app-navigation',
@@ -15,7 +16,8 @@ import { DownloadAppDialogComponent } from '../shared/components/download-app-di
     RouterModule,
     SearchBoxComponent,
     CartIconComponent,
-    DownloadAppDialogComponent
+    DownloadAppDialogComponent,
+    AuthIndicatorComponent
   ]
 })
 export class NavigationComponent {

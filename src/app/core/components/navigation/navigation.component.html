@@ -22,12 +22,12 @@
                 </div>
             </div>
 
-            <!-- Center Section: Search (Hidden on small screens) -->
+            <!-- Center Section: Search -->
             <div class="hidden sm:flex flex-1 items-center justify-center max-w-xl">
                 <app-search-box class="w-full"></app-search-box>
             </div>
 
-            <!-- Right Section: Download & Cart -->
+            <!-- Right Section -->
             <div class="flex items-center gap-4">
                 <!-- Download App Button -->
                 <button (click)="openDownloadDialog()"
@@ -37,6 +37,9 @@
                     </svg>
                     <span>حمل التطبيق</span>
                 </button>
+
+                <!-- Auth Indicator -->
+                <app-auth-indicator></app-auth-indicator>
 
                 <!-- Cart Icon -->
                 <app-cart-icon></app-cart-icon>
@@ -60,14 +63,6 @@
                    class="block py-2 text-cyber-text-primary hover:text-cyber-accent-primary">
                     عن كيوب كارد
                 </a>
-                <!-- Mobile Download App Button -->
-                <button (click)="openDownloadDialog()"
-                        class="flex items-center gap-2 py-2 text-cyber-text-primary hover:text-cyber-accent-primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                    </svg>
-                    <span>حمل التطبيق</span>
-                </button>
             </div>
         </div>
     </div>

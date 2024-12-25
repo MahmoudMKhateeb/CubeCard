@@ -1,54 +1,68 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-
-import { HomePage } from './core/components/home/pages/home.page';
-import { ProductDetailsComponent } from './core/components/products/pages/product-details/product-details.component';
-import { CategoriesPage } from './core/components/categories/pages/categories.page';
-import { CartPage } from './core/components/cart/pages/cart.page';
-import { PaymentComponent } from './core/components/payment/pages/payment.component';
-import { AboutPage } from './core/components/about/pages/about.page';
-import { OrderSuccessComponent } from './core/components/order/pages/order-success/order-success.component';
-import { OrderFailedPage } from './core/components/order/pages/order-failed/order-failed.page';
+import { AuthGuard } from './core/guards/auth.guard';
 
 const routes: Routes = [
-  { 
-    path: '', 
-    component: HomePage,
+  {
+    path: '',
+    loadComponent: () => import('./core/components/home/pages/home.page').then(m => m.HomePage),
     title: 'الرئيسية'
   },
-  { 
-    path: 'categories', 
-    component: CategoriesPage,
+  {
+    path: 'categories',
+    loadComponent: () => import('./core/components/categories/pages/categories.page').then(m => m.CategoriesPage),
     title: 'التصنيفات'
   },
-  { 
-    path: 'product/:id', 
-    component: ProductDetailsComponent,
+  {
+    path: 'product/:id',
+    loadComponent: () => import('./core/components/products/pages/product-details/product-details.component').then(m => m.ProductDetailsComponent),
     title: 'تفاصيل المنتج'
   },
   {
     path: 'cart',
-    component: CartPage,
+    loadComponent: () => import('./core/components/cart/pages/cart.page').then(m => m.CartPage),
     title: 'سلة المشتريات'
   },
   {
     path: 'payment',
-    component: PaymentComponent,
+    loadComponent: () => import('./core/components/payment/pages/payment.component').then(m => m.PaymentComponent),
     title: 'إتمام الطلب'
   },
   {
     path: 'about',
-    component: AboutPage,
+    loadComponent: () => import('./core/components/about/pages/about.page').then(m => m.AboutPage),
     title: 'عن كيوب كارد'
   },
   {
+    path: 'login',
+    loadComponent: () => import('./core/components/auth/pages/login/login.component').then(m => m.LoginComponent),
+    title: 'تسجيل الدخول'
+  },
+  {
+    path: 'register',
+    loadComponent: () => import('./core/components/auth/pages/register/register.component').then(m => m.RegisterComponent),
+    title: 'إنشاء حساب'
+  },
+  {
+    path: 'profile',
+    loadComponent: () => import('./core/components/profile/pages/profile.page').then(m => m.ProfilePage),
+    canActivate: [AuthGuard],
+    title: 'الملف الشخصي'
+  },
+  {
+    path: 'orders',
+    loadComponent: () => import('./core/components/orders/pages/orders.page').then(m => m.OrdersPage),
+    canActivate: [AuthGuard],
+    title: 'طلباتي'
+  },
+  {
     path: 'order/success/:id',
-    component: OrderSuccessComponent,
+    loadComponent: () => import('./core/components/order/pages/order-success/order-success.component').then(m => m.OrderSuccessComponent),
     title: 'تم الطلب بنجاح'
   },
   {
     path: 'order/failed/:id',
-    component: OrderFailedPage,
+    loadComponent: () => import('./core/components/order/pages/order-failed/order-failed.page').then(m => m.OrderFailedPage),
     title: 'فشل الطلب'
   },
   {

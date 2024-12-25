@@ -1,0 +1,74 @@
+<div class="min-h-screen bg-cyber-surface py-8">
+  <div class="container-content max-w-md">
+    <div class="bg-cyber-card rounded-lg p-8 shadow-card">
+      <!-- Header -->
+      <div class="text-center mb-8">
+        <h1 class="text-2xl font-bold text-cyber-text-primary mb-2">تسجيل الدخول</h1>
+        <p class="text-cyber-text-secondary">مرحباً بك في كيوب كارد</p>
+      </div>
+
+      <!-- Login Form -->
+      <form *ngIf="!showOtpVerification" (ngSubmit)="onSubmit()" #loginForm="ngForm" class="space-y-6">
+        <!-- Username/Email Input -->
+        <div>
+          <label for="username" class="block text-sm font-medium text-cyber-text-primary mb-1">
+            رقم الجوال أو البريد الإلكتروني
+          </label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            [(ngModel)]="credentials.username"
+            class="w-full px-4 py-2 bg-cyber-surface border border-cyber-border rounded-lg text-cyber-text-primary focus:outline-none focus:border-cyber-accent-primary"
+            required
+          >
+        </div>
+
+        <!-- Password Input -->
+        <div>
+          <label for="password" class="block text-sm font-medium text-cyber-text-primary mb-1">
+            كلمة المرور
+          </label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            [(ngModel)]="credentials.password"
+            class="w-full px-4 py-2 bg-cyber-surface border border-cyber-border rounded-lg text-cyber-text-primary focus:outline-none focus:border-cyber-accent-primary"
+            required
+          >
+        </div>
+
+        <!-- Error Message -->
+        <div *ngIf="error" class="text-red-500 text-sm text-center">
+          {{ error }}
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          [disabled]="loading"
+          class="w-full bg-cyber-accent-primary text-white py-3 rounded-lg hover:bg-cyber-hover-primary transition-colors disabled:opacity-50"
+        >
+          <span *ngIf="!loading">تسجيل الدخول</span>
+          <span *ngIf="loading">جاري تسجيل الدخول...</span>
+        </button>
+
+        <!-- Register Link -->
+        <div class="text-center text-cyber-text-secondary">
+          ليس لديك حساب؟
+          <a routerLink="/register" class="text-cyber-accent-primary hover:text-cyber-hover-primary">
+            إنشاء حساب جديد
+          </a>
+        </div>
+      </form>
+
+      <!-- OTP Verification -->
+      <app-otp-verification
+        *ngIf="showOtpVerification"
+        [mobileNumber]="mobileNumber"
+        (verified)="onOtpVerified()"
+      ></app-otp-verification>
+    </div>
+  </div>
+</div>

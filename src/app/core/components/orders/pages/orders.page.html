@@ -1,0 +1,85 @@
+<div class="min-h-screen bg-cyber-surface py-8">
+  <div class="container-content">
+    <!-- Page Header -->
+    <div class="bg-cyber-card rounded-lg p-6 mb-6">
+      <h1 class="text-2xl font-bold text-cyber-text-primary">طلباتي</h1>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="flex justify-center items-center min-h-[400px]">
+      <div class="animate-spin rounded-full h-12 w-12 border-4 border-cyber-accent-primary border-t-transparent"></div>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error" class="bg-red-500 bg-opacity-10 text-red-500 p-4 rounded-lg text-center mb-6">
+      {{ error }}
+    </div>
+
+    <!-- Orders List -->
+    <div *ngIf="!loading && !error" class="space-y-6">
+      <!-- Empty State -->
+      <div *ngIf="orders.length === 0" class="bg-cyber-card rounded-lg p-8 text-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-cyber-text-secondary mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+        </svg>
+        <h2 class="text-xl font-semibold text-cyber-text-primary mb-2">لا يوجد طلبات</h2>
+        <p class="text-cyber-text-secondary">لم تقم بإجراء أي طلبات حتى الآن</p>
+      </div>
+
+      <!-- Orders -->
+      <div *ngFor="let order of orders" class="bg-cyber-card rounded-lg p-6">
+        <!-- Order Header -->
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <h2 class="text-lg font-semibold text-cyber-text-primary mb-1">
+              طلب #{{ order.uuid }}
+            </h2>
+            <p class="text-sm text-cyber-text-secondary">
+              {{ order.timestamps.created_at | date:'medium' }}
+            </p>
+          </div>
+          <div class="flex items-center gap-4">
+            <span [class]="getStatusClass(order.status)">
+              {{ getStatusText(order.status) }}
+            </span>
+            <span class="text-lg font-semibold text-cyber-text-primary">
+              {{ order.payment.total_amount }} {{ order.payment.currency }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Order Items -->
+        <div class="space-y-4">
+          <div *ngFor="let item of order.items" class="flex items-center gap-4 py-4 border-t border-cyber-border">
+            <div class="flex-1">
+              <h3 class="font-medium text-cyber-text-primary">{{ item.product.name }}</h3>
+              <div class="text-sm text-cyber-text-secondary">
+                الكمية: {{ item.quantity }} × {{ item.product.price }} {{ item.product.currency }}
+              </div>
+            </div>
+            <div class="text-cyber-text-primary font-medium">
+              {{ item.total }} {{ item.product.currency }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Order Footer -->
+        <div class="mt-6 pt-6 border-t border-cyber-border">
+          <div class="flex flex-wrap justify-between gap-4">
+            <div class="text-cyber-text-secondary">
+              <p>طريقة الدفع: {{ order.payment.method }}</p>
+              <p *ngIf="order.notes">ملاحظات: {{ order.notes }}</p>
+            </div>
+            <a [routerLink]="['/orders', order.uuid]"
+               class="inline-flex items-center gap-2 px-4 py-2 bg-cyber-surface text-cyber-text-primary rounded-lg hover:bg-cyber-card transition-colors">
+              <span>عرض التفاصيل</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

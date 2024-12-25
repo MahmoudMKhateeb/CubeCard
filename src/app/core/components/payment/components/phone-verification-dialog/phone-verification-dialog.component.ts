@@ -1,12 +1,13 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { PhoneVerificationService } from '../../services/phone-verification.service';
+import { PaymentOtpService } from '../../services/payment-otp.service';
+import { OtpInputComponent } from '../../../shared/otp/otp-input/otp-input.component';
 
 @Component({
   selector: 'app-phone-verification-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, OtpInputComponent],
   template: `
     <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div class="bg-cyber-card rounded-lg p-6 max-w-md w-full mx-4">
@@ -15,33 +16,23 @@ import { PhoneVerificationService } from '../../services/phone-verification.serv
           تم إرسال رمز التحقق إلى رقم جوالك {{phone}}
         </p>
 
-        <div class="mb-6">
-          <input
-            type="text"
-            [(ngModel)]="otpCode"
-            maxlength="4"
-            placeholder="0000"
-            class="w-full px-4 py-2 bg-cyber-surface border border-cyber-border rounded-lg text-center text-2xl tracking-wider text-cyber-text-primary focus:outline-none focus:border-cyber-accent-primary"
-            [class.border-red-500]="error"
-          />
-          <p *ngIf="error" class="text-red-500 text-sm mt-2">{{error}}</p>
-        </div>
+        <app-otp-input
+          [error]="error"
+          (otpComplete)="verifyOtp($event)">
+        </app-otp-input>
 
-        <div class="flex gap-4">
-          <button
-            (click)="verifyOtp()"
-            class="flex-1 bg-cyber-accent-primary text-white py-2 rounded-lg hover:bg-cyber-hover-primary transition-colors"
-            [disabled]="loading"
-          >
-            <span *ngIf="!loading">تأكيد</span>
-            <span *ngIf="loading">جاري التحقق...</span>
-          </button>
+        <div class="mt-6 flex justify-between items-center">
           <button
             (click)="resendOtp()"
-            class="flex-1 bg-cyber-surface text-cyber-text-primary py-2 rounded-lg hover:bg-cyber-card transition-colors"
+            [disabled]="resendDisabled || loading"
+            class="text-cyber-accent-primary hover:text-cyber-hover-primary transition-colors disabled:opacity-50">
+            إعادة إرسال الرمز {{countdown > 0 ? '(' + countdown + ')' : ''}}
+          </button>
+          <button
+            (click)="cancelled.emit()"
             [disabled]="loading"
-          >
-            إعادة الإرسال
+            class="text-cyber-text-secondary hover:text-cyber-text-primary transition-colors">
+            إلغاء
           </button>
         </div>
       </div>
@@ -49,52 +40,82 @@ import { PhoneVerificationService } from '../../services/phone-verification.serv
   `
 })
 export class PhoneVerificationDialogComponent {
-  @Input() phone: string = '';
+  @Input() phone!: string;
   @Output() verified = new EventEmitter<void>();
   @Output() cancelled = new EventEmitter<void>();
 
-  otpCode = '';
   error = '';
   loading = false;
+  countdown = 60;
+  resendDisabled = true;
+  private countdownInterval?: number;
 
-  constructor(private verificationService: PhoneVerificationService) {}
+  constructor(private otpService: PaymentOtpService) {}
 
-  verifyOtp(): void {
-    if (this.otpCode.length !== 4) {
-      this.error = 'يرجى إدخال رمز التحقق المكون من 4 أرقام';
-      return;
-    }
+  ngOnInit(): void {
+    this.startCountdown();
+  }
 
+  ngOnDestroy(): void {
+    this.stopCountdown();
+  }
+
+  verifyOtp(otp: string): void {
+    if (this.loading) return;
+    
     this.loading = true;
     this.error = '';
 
-    this.verificationService.verifyOtp(this.phone, this.otpCode).subscribe({
-      next: (isValid) => {
-        if (isValid) {
+    this.otpService.verifyPaymentOtp(this.phone, otp).subscribe({
+      next: (response) => {
+        if (response.status === 'success' && response.data?.is_verified) {
           this.verified.emit();
         } else {
-          this.error = 'رمز التحقق غير صحيح';
+          this.error = response.message || 'رمز التحقق غير صحيح';
         }
         this.loading = false;
       },
-      error: () => {
-        this.error = 'حدث خطأ أثناء التحقق من الرمز';
+      error: (err) => {
+        this.error = err.message;
         this.loading = false;
       }
     });
   }
 
   resendOtp(): void {
+    if (this.loading || this.resendDisabled) return;
+
     this.loading = true;
-    this.verificationService.sendOtp(this.phone).subscribe({
+    this.error = '';
+
+    this.otpService.sendPaymentOtp(this.phone).subscribe({
       next: () => {
+        this.startCountdown();
         this.loading = false;
-        this.error = '';
       },
-      error: () => {
+      error: (err) => {
+        this.error = err.message;
         this.loading = false;
-        this.error = 'حدث خطأ أثناء إعادة إرسال الرمز';
       }
     });
+  }
+
+  private startCountdown(): void {
+    this.countdown = 60;
+    this.resendDisabled = true;
+    
+    this.countdownInterval = window.setInterval(() => {
+      this.countdown--;
+      if (this.countdown <= 0) {
+        this.resendDisabled = false;
+        this.stopCountdown();
+      }
+    }, 1000);
+  }
+
+  private stopCountdown(): void {
+    if (this.countdownInterval) {
+      clearInterval(this.countdownInterval);
+    }
   }
 }

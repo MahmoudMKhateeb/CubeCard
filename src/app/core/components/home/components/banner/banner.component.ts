@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 interface Banner {
   image: string;
@@ -8,7 +9,9 @@ interface Banner {
 @Component({
   selector: 'app-banner',
   templateUrl: './banner.component.html',
-  styleUrls: ['./banner.component.css']
+  styleUrls: ['./banner.component.css'],
+  standalone: true,
+  imports: [CommonModule]
 })
 export class BannerComponent implements OnInit, OnDestroy {
   banners: Banner[] = [

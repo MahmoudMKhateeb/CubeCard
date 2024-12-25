@@ -1,19 +1,16 @@
 import { Component } from '@angular/core';
-
-import {StoreConfig} from "../shared/config/store-config";
-import {RouterLink} from "@angular/router";
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { StoreConfig } from "../shared/config/store-config";
 
 @Component({
   selector: 'app-footer',
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.css'],
   standalone: true,
-  imports: [
-    RouterLink,
-  ]
+  imports: [CommonModule, RouterModule]
 })
 export class FooterComponent {
   currentYear = new Date().getFullYear();
   storeConfig = StoreConfig;
-
 }

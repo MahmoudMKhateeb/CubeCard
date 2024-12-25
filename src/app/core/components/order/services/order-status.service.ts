@@ -3,8 +3,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subscription, interval } from 'rxjs';
 import { switchMap, takeWhile, catchError } from 'rxjs/operators';
 import { OrderApiService } from './order-api.service';
-import {CreateOrderResponse, Order, OrderStatus} from '../models/order.types';
-import {CartService} from "../../../../services/cart.service";
+import { CreateOrderResponse, Order, OrderStatus } from '../models/order.types';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +12,7 @@ export class OrderStatusService {
   private currentOrder = new BehaviorSubject<Order | null>(null);
   private statusCheckSubscription?: Subscription;
   private readonly POLLING_INTERVAL = 5000; // 5 seconds
-  stripe: any; // This will hold the Stripe object
+  stripe: any;
 
   constructor(
     private orderApi: OrderApiService,
@@ -24,21 +23,12 @@ export class OrderStatusService {
 
   createOrder(orderData: any): void {
     this.orderApi.createOrder(orderData).subscribe({
-      next: (response:CreateOrderResponse) => {
+      next: (response: CreateOrderResponse) => {
         if (response.success) {
-          //this.currentOrder.next(order);
-          
-          // Immediate navigation based on initial status
-          if (response.success) {
-            this.redirectToCheckout(response.checkout_session_id);
-            //this.router.navigate(['/order/success', order.uuid]);
-          } else {
-            // For inProgress or onHold, navigate to success page and start polling
-            this.router.navigate(['/order/failed', response.order_uuid]);
-            this.startStatusPolling(response.order_uuid);
-          }
+          this.redirectToCheckout(response.checkout_session_id);
         } else {
-          this.router.navigate(['/order/failed']);
+          this.router.navigate(['/order/failed', response.order_uuid]);
+          this.startStatusPolling(response.order_uuid);
         }
       },
       error: () => {
@@ -48,18 +38,20 @@ export class OrderStatusService {
   }
 
   private startStatusPolling(orderUuid: string): void {
-    // Clean up any existing subscription
     this.stopStatusPolling();
 
     this.statusCheckSubscription = interval(this.POLLING_INTERVAL).pipe(
       switchMap(() => this.orderApi.getOrderStatus(orderUuid)),
-      takeWhile(order => order.status === 'inProgress' || order.status === 'onHold', true),
+      takeWhile((order: Order) => 
+        order.status === 'inProgress' || order.status === 'onHold', 
+        true
+      ),
       catchError(error => {
         console.error('Error polling order status:', error);
         this.router.navigate(['/order/failed']);
         throw error;
       })
-    ).subscribe(order => {
+    ).subscribe((order: Order) => {
       this.currentOrder.next(order);
       this.navigateBasedOnStatus(order.status);
     });
@@ -96,7 +88,7 @@ export class OrderStatusService {
     return this.orderApi.getOrderStatus(uuid);
   }
 
-  injectStripeScript(): void {
+  private injectStripeScript(): void {
     if (!document.getElementById('stripe-script')) {
       const script = document.createElement('script');
       script.id = 'stripe-script';
@@ -109,16 +101,13 @@ export class OrderStatusService {
   }
 
   async redirectToCheckout(sessionId: string): Promise<void> {
-
     try {
-      // Request a Checkout Session from the backend
       if (!this.stripe) {
         console.error('Stripe is not initialized.');
         return;
       }
 
-      // Redirect to Stripe Checkout
-      const result = await this.stripe.redirectToCheckout({ sessionId: sessionId });
+      const result = await this.stripe.redirectToCheckout({ sessionId });
       if (result.error) {
         console.error('Error redirecting to Checkout:', result.error.message);
         alert('حدث خطأ أثناء معالجة الدفع.');
@@ -126,12 +115,10 @@ export class OrderStatusService {
     } catch (error) {
       console.error('Unexpected error:', error);
       alert('حدث خطأ أثناء معالجة الدفع.');
-    } finally {
     }
   }
 
   ngOnDestroy(): void {
     this.stopStatusPolling();
   }
-
 }

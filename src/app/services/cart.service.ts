@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Product } from '../core/components/shared/models/product.interface';
 
 export interface CartItem {
@@ -19,7 +19,10 @@ export class CartService {
   private cartItems = new BehaviorSubject<CartItem[]>([]);
 
   constructor() {
-    // Load cart from localStorage
+    this.loadCartFromStorage();
+  }
+
+  private loadCartFromStorage(): void {
     const savedCart = localStorage.getItem('cart');
     if (savedCart) {
       try {
@@ -31,7 +34,7 @@ export class CartService {
     }
   }
 
-  getCartItems() {
+  getCartItems(): Observable<CartItem[]> {
     return this.cartItems.asObservable();
   }
 
@@ -59,31 +62,27 @@ export class CartService {
       newItems = [...currentItems, newItem];
     }
 
-    this.cartItems.next(newItems);
-    this.saveCart(newItems);
+    this.updateCart(newItems);
   }
 
   removeFromCart(itemId: number): void {
     const currentItems = this.cartItems.getValue();
     const newItems = currentItems.filter(item => item.id !== itemId);
-    this.cartItems.next(newItems);
-    this.saveCart(newItems);
+    this.updateCart(newItems);
   }
 
   updateQuantity(itemId: number, quantity: number): void {
-    if (quantity < 1 || quantity > 1) return;
+    if (quantity < 1 || quantity > 5) return;
 
     const currentItems = this.cartItems.getValue();
     const newItems = currentItems.map(item =>
       item.id === itemId ? { ...item, quantity } : item
     );
-    this.cartItems.next(newItems);
-    this.saveCart(newItems);
+    this.updateCart(newItems);
   }
 
   clearCart(): void {
-    this.cartItems.next([]);
-    localStorage.removeItem('cart');
+    this.updateCart([]);
   }
 
   getTotal(): number {
@@ -92,7 +91,8 @@ export class CartService {
     }, 0);
   }
 
-  private saveCart(items: CartItem[]): void {
+  private updateCart(items: CartItem[]): void {
+    this.cartItems.next(items);
     localStorage.setItem('cart', JSON.stringify(items));
   }
 }

@@ -6,8 +6,7 @@ export interface PaymentForm {
   paymentMethod: string;
 }
 
-export interface ValidationErrors {
-  [key: string]: string | null;
+export interface PaymentFormErrors {
   phone: string | null;
   firstName: string | null;
   lastName: string | null;

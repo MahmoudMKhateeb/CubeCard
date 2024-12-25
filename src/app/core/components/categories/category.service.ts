@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import {AppConstants} from "../../../app.constants";
+import { AppConstants } from "../../../core/constants/app.constants";
 
 export interface Category {
     id: number;
@@ -14,11 +14,11 @@ export interface Category {
     providedIn: 'root',
 })
 export class CategoryService {
-    private apiUrl = AppConstants.apiUrl; // Replace with your backend URL
+    private apiUrl = AppConstants.apiUrl;
 
     constructor(private http: HttpClient) {}
 
     getCategories(): Observable<Category[]> {
-        return this.http.get<Category[]>(this.apiUrl+"categories");
+        return this.http.get<Category[]>(`${this.apiUrl}categories`);
     }
 }

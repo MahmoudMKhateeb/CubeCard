@@ -9,7 +9,7 @@ import { map } from 'rxjs/operators';
   standalone: true,
   imports: [CommonModule, RouterModule],
   template: `
-    <a routerLink="/cart" class="relative">
+    <button routerLink="/cart" class="relative inline-block">
       <svg xmlns="http://www.w3.org/2000/svg"
            class="h-6 w-6 text-cyber-text-primary hover:text-cyber-accent-primary transition-colors"
            fill="none"
@@ -25,12 +25,12 @@ import { map } from 'rxjs/operators';
                    flex items-center justify-center rounded-full">
         {{cartItemCount$ | async}}
       </span>
-    </a>
+    </button>
   `
 })
 export class CartIconComponent {
   cartItemCount$ = this.cartService.getCartItems().pipe(
-    map((items) => items.reduce((total, item) => total + item.quantity, 0))
+    map(items => items.reduce((total, item) => total + item.quantity, 0))
   );
 
   constructor(private cartService: CartService) {}

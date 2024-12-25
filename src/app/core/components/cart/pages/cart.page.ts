@@ -1,25 +1,15 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { CartService } from '../../../../services/cart.service';
 
 @Component({
   selector: 'app-cart',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
   template: `
     <div class="min-h-screen bg-cyber-surface py-8">
       <div class="container-content">
-        <!-- Breadcrumb -->
-        <nav class="mb-8" aria-label="Breadcrumb">
-          <ol class="flex items-center space-x-4">
-            <li>
-              <a routerLink="/" class="text-cyber-text-secondary hover:text-cyber-accent-primary">الرئيسية</a>
-            </li>
-            <li>
-              <span class="mx-2 text-cyber-border">/</span>
-              <span class="text-cyber-text-primary">سلة المشتريات</span>
-            </li>
-          </ol>
-        </nav>
-
         <!-- Empty Cart -->
         <div *ngIf="(cartService.getCartItems() | async)?.length === 0" class="text-center py-12">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-cyber-text-secondary mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -47,7 +37,7 @@ import { CartService } from '../../../../services/cart.service';
                          class="flex gap-4 pb-6 border-b border-cyber-border last:border-0">
                       <!-- Product Image -->
                       <div class="w-24 h-24 bg-cyber-surface rounded-lg p-2 flex items-center justify-center">
-                        <img [src]="item.product.image || defaultImage" 
+                        <img [src]="item.product.image" 
                              [alt]="item.product.name"
                              class="w-full h-full object-contain"
                              (error)="handleImageError($event)">
@@ -116,7 +106,7 @@ import { CartService } from '../../../../services/cart.service';
                   </div>
                 </div>
 
-                <button (click)="router.navigate(['/payment'])" 
+                <button routerLink="/payment" 
                         class="w-full bg-cyber-accent-primary text-white py-3 rounded-lg mt-6 hover:bg-cyber-hover-primary transition-colors">
                   إتمام الشراء
                 </button>
@@ -131,10 +121,7 @@ import { CartService } from '../../../../services/cart.service';
 export class CartPage {
   defaultImage = 'https://app.rasseed.com/files/image%20ar&en-01018109.png';
 
-  constructor(
-    public cartService: CartService,
-    public router: Router
-  ) {}
+  constructor(public cartService: CartService) {}
 
   calculateItemTotal(item: any): number {
     return parseFloat(item.selectedPrice.amount) * item.quantity;

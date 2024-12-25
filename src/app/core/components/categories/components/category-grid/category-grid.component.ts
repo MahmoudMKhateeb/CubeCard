@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Category, CategoryService } from "../../category.service";
 import { ProductMainService } from "../../../products/services/product.service";
-import { NgEventBus } from "ng-event-bus";
 import { ErrorMessageComponent } from '../../../shared/components/error-message/error-message.component';
 
 @Component({
@@ -17,26 +16,27 @@ export class CategoryGridComponent implements OnInit {
   categories: Category[] = [];
   loading = true;
   error = '';
-  selectedCategory: number = 0; // Initialize with 0 for "كل التصنيفات"
+  selectedCategory: number = 0;
 
   constructor(
-      private categoryService: CategoryService,
-      private productService: ProductMainService,
-      private _eventBus: NgEventBus
+    private categoryService: CategoryService,
+    private productService: ProductMainService
   ) {}
 
   ngOnInit(): void {
     this.fetchCategories();
-    // Emit initial selection
-    this._eventBus.cast('Category:selection', 0);
   }
 
   selectCategory(categoryID: number): void {
     this.selectedCategory = categoryID;
-    this._eventBus.cast('Category:selection', categoryID);
+    if (categoryID === 0) {
+      this.loadProducts();
+    } else {
+      this.getProductsByCategory(categoryID);
+    }
   }
 
-  fetchCategories(): void {
+  private fetchCategories(): void {
     this.loading = true;
     this.error = '';
 
@@ -51,5 +51,13 @@ export class CategoryGridComponent implements OnInit {
         this.loading = false;
       },
     });
+  }
+
+  private loadProducts(): void {
+    this.productService.getProducts().subscribe();
+  }
+
+  private getProductsByCategory(categoryID: number): void {
+    this.productService.getProductByCatId(categoryID).subscribe();
   }
 }

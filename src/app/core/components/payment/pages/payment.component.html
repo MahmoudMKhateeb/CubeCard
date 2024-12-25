@@ -1,157 +1,155 @@
 <div class="min-h-screen bg-cyber-surface py-8">
-    <div class="container-content">
-        <!-- Header -->
-        <div class="flex items-center justify-between mb-8">
-            <h1 class="text-2xl font-bold text-cyber-text-primary">إتمام الطلب</h1>
-            <div class="flex items-center gap-2">
-                <span class="text-sm text-cyber-text-secondary">لديك سؤال؟</span>
-                <a href="#" class="text-sm text-cyber-accent-primary hover:text-cyber-hover-primary">تواصل معنا</a>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- Right Column - Personal Info & Payment -->
-            <div class="space-y-6">
-                <!-- Personal Information -->
-                <div class="bg-cyber-card rounded-lg p-6 shadow-card">
-                    <h2 class="text-xl font-semibold mb-6 text-cyber-text-primary">البيانات الشخصية</h2>
-
-                    <div class="space-y-4">
-                        <!-- Phone Number -->
-                        <app-phone-input
-                            [(value)]="form.phone"
-                            [error]="errors.phone"
-                            [touched]="touched['phone']"
-                            [isVerified]="verificationService.isPhoneVerified(form.phone)"
-                            (blur)="onFieldBlur('phone')"
-                            (verify)="startVerification()"
-                        ></app-phone-input>
-
-                        <!-- Name Fields -->
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-cyber-text-primary mb-1">
-                                    الاسم الأول
-                                    <span class="text-red-500">*</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    [(ngModel)]="form.firstName"
-                                    (blur)="onFieldBlur('firstName')"
-                                    placeholder="مثال: أحمد"
-                                    [class]="'w-full rounded-lg border px-4 py-2 bg-cyber-surface text-cyber-text-primary focus:outline-none focus:ring-2 focus:ring-cyber-accent-primary ' + (touched['firstName'] && errors.firstName ? 'border-red-500' : 'border-cyber-border')"
-                                >
-                                <span *ngIf="touched['firstName'] && errors.firstName" class="error-message">
-                                    {{errors.firstName}}
-                                </span>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-cyber-text-primary mb-1">
-                                    الاسم الأخير
-                                    <span class="text-red-500">*</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    [(ngModel)]="form.lastName"
-                                    (blur)="onFieldBlur('lastName')"
-                                    placeholder="مثال: العائلة"
-                                    [class]="'w-full rounded-lg border px-4 py-2 bg-cyber-surface text-cyber-text-primary focus:outline-none focus:ring-2 focus:ring-cyber-accent-primary ' + (touched['lastName'] && errors.lastName ? 'border-red-500' : 'border-cyber-border')"
-                                >
-                                <span *ngIf="touched['lastName'] && errors.lastName" class="error-message">
-                                    {{errors.lastName}}
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- Email -->
-                        <div>
-                            <label class="block text-sm font-medium text-cyber-text-primary mb-1">
-                                البريد الإلكتروني
-                                <span class="text-red-500">*</span>
-                            </label>
-                            <input
-                                type="email"
-                                [(ngModel)]="form.email"
-                                (blur)="onFieldBlur('email')"
-                                placeholder="example@email.com"
-                                [class]="'w-full rounded-lg border px-4 py-2 bg-cyber-surface text-cyber-text-primary focus:outline-none focus:ring-2 focus:ring-cyber-accent-primary ' + (touched['email'] && errors.email ? 'border-red-500' : 'border-cyber-border')"
-                            >
-                            <span *ngIf="touched['email'] && errors.email" class="error-message">
-                                {{errors.email}}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Payment Methods -->
-                <div class="bg-cyber-card rounded-lg p-6 shadow-card">
-                    <h2 class="text-xl font-semibold mb-6 text-cyber-text-primary">وسائل الدفع</h2>
-
-                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-                        <button 
-                            *ngFor="let method of paymentMethods"
-                            (click)="selectPaymentMethod(method.id)"
-                            [class]="'payment-method-button ' + (form.paymentMethod === method.id ? 'selected' : '')"
-                        >
-                            <img [src]="method.icon" [alt]="method.name">
-                            <span>{{method.name}}</span>
-                        </button>
-                    </div>
-
-                    <span *ngIf="touched['paymentMethod'] && errors.paymentMethod" class="error-message block mt-2">
-                        {{errors.paymentMethod}}
-                    </span>
-                </div>
-            </div>
-
-            <!-- Left Column - Order Summary -->
-            <div class="bg-cyber-card rounded-lg p-6 shadow-card h-fit">
-                <h2 class="text-xl font-semibold mb-6 text-cyber-text-primary">ملخص طلبك</h2>
-
-                <!-- Order Items -->
-                <div class="space-y-4 mb-6">
-                    <div *ngFor="let item of cartService.getCartItems() | async" class="flex gap-4 items-start">
-                        <img
-                            [src]="item.product.image"
-                            [alt]="item.product.name"
-                            class="w-16 h-16 object-contain rounded-lg bg-cyber-surface p-2"
-                            (error)="handleImageError($event)"
-                        >
-                        <div class="flex-1">
-                            <h3 class="font-medium text-cyber-text-primary">{{item.product.name}}</h3>
-                            <div class="text-cyber-text-secondary">السعر: {{item.selectedPrice.amount}} {{item.selectedPrice.currency}}</div>
-                            <div class="text-cyber-text-secondary">الكمية: {{item.quantity}}</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Total -->
-                <div class="border-t border-cyber-border pt-4">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-cyber-text-secondary">المجموع الكلي</span>
-                        <span class="font-semibold text-cyber-text-primary">{{cartService.getTotal() * 1.15}} ر.س</span>
-                    </div>
-                    <div class="text-sm text-cyber-text-secondary text-left">شامل ضريبة القيمة المضافة</div>
-                </div>
-
-                <!-- Checkout Button -->
-                <button 
-                    (click)="processPayment()"
-                    class="w-full bg-cyber-accent-primary text-white py-3 rounded-lg mt-6 hover:bg-cyber-hover-primary transition-colors"
-                    [disabled]="!isFormValid() || isProcessing"
-                    [class.opacity-50]="!isFormValid() || isProcessing"
-                >
-                    <span *ngIf="!isProcessing">إتمام الطلب</span>
-                    <span *ngIf="isProcessing">جاري معالجة الطلب...</span>
-                </button>
-            </div>
-        </div>
+  <div class="container-content">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-8">
+      <h1 class="text-2xl font-bold text-cyber-text-primary">إتمام الطلب</h1>
     </div>
 
-    <!-- Phone Verification Dialog -->
-    <app-phone-verification-dialog
-        *ngIf="showVerificationDialog"
-        [phone]="form.phone"
-        (verified)="onPhoneVerified()"
-    ></app-phone-verification-dialog>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Right Column - Personal Info & Payment -->
+      <div class="space-y-6">
+        <!-- Personal Information -->
+        <div class="bg-cyber-card rounded-lg p-6 shadow-card">
+          <h2 class="text-xl font-semibold mb-6 text-cyber-text-primary">البيانات الشخصية</h2>
+
+          <div class="space-y-4">
+            <!-- Phone Number -->
+            <app-phone-input
+              [(value)]="form.phone"
+              [error]="errors.phone"
+              [touched]="touched['phone']"
+              [isVerified]="paymentOtpService.isPhoneVerified(form.phone)"
+              (blur)="onFieldBlur('phone')"
+              (verify)="startVerification()">
+            </app-phone-input>
+
+            <!-- Name Fields -->
+            <div class="grid grid-cols-2 gap-4">
+              <!-- First Name -->
+              <div>
+                <label class="block text-sm font-medium text-cyber-text-primary mb-1">
+                  الاسم الأول
+                  <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  [(ngModel)]="form.firstName"
+                  (blur)="onFieldBlur('firstName')"
+                  placeholder="مثال: أحمد"
+                  [class]="'w-full rounded-lg border px-4 py-2 bg-cyber-surface text-cyber-text-primary focus:outline-none focus:ring-2 focus:ring-cyber-accent-primary ' + (touched['firstName'] && errors.firstName ? 'border-red-500' : 'border-cyber-border')"
+                >
+                <span *ngIf="touched['firstName'] && errors.firstName" class="text-red-500 text-sm mt-1 block">
+                  {{errors.firstName}}
+                </span>
+              </div>
+
+              <!-- Last Name -->
+              <div>
+                <label class="block text-sm font-medium text-cyber-text-primary mb-1">
+                  الاسم الأخير
+                  <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  [(ngModel)]="form.lastName"
+                  (blur)="onFieldBlur('lastName')"
+                  placeholder="مثال: العائلة"
+                  [class]="'w-full rounded-lg border px-4 py-2 bg-cyber-surface text-cyber-text-primary focus:outline-none focus:ring-2 focus:ring-cyber-accent-primary ' + (touched['lastName'] && errors.lastName ? 'border-red-500' : 'border-cyber-border')"
+                >
+                <span *ngIf="touched['lastName'] && errors.lastName" class="text-red-500 text-sm mt-1 block">
+                  {{errors.lastName}}
+                </span>
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div>
+              <label class="block text-sm font-medium text-cyber-text-primary mb-1">
+                البريد الإلكتروني
+                <span class="text-red-500">*</span>
+              </label>
+              <input
+                type="email"
+                [(ngModel)]="form.email"
+                (blur)="onFieldBlur('email')"
+                placeholder="example@email.com"
+                [class]="'w-full rounded-lg border px-4 py-2 bg-cyber-surface text-cyber-text-primary focus:outline-none focus:ring-2 focus:ring-cyber-accent-primary ' + (touched['email'] && errors.email ? 'border-red-500' : 'border-cyber-border')"
+              >
+              <span *ngIf="touched['email'] && errors.email" class="text-red-500 text-sm mt-1 block">
+                {{errors.email}}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment Methods -->
+        <div class="bg-cyber-card rounded-lg p-6 shadow-card">
+          <h2 class="text-xl font-semibold mb-6 text-cyber-text-primary">وسائل الدفع</h2>
+
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+            <button 
+              (click)="form.paymentMethod = 'visa'"
+              [class]="'payment-method-button ' + (form.paymentMethod === 'visa' ? 'selected' : '')"
+            >
+              <img src="https://app.rasseed.com/files/visadc8ffe.png" alt="Visa">
+              <span>Visa</span>
+            </button>
+          </div>
+
+          <span *ngIf="touched['paymentMethod'] && errors.paymentMethod" class="text-red-500 text-sm mt-2 block">
+            {{errors.paymentMethod}}
+          </span>
+        </div>
+      </div>
+
+      <!-- Left Column - Order Summary -->
+      <div class="bg-cyber-card rounded-lg p-6 shadow-card h-fit">
+        <h2 class="text-xl font-semibold mb-6 text-cyber-text-primary">ملخص طلبك</h2>
+
+        <!-- Order Items -->
+        <div class="space-y-4 mb-6">
+          <div *ngFor="let item of cartService.getCartItems() | async" class="flex gap-4 items-start">
+            <img
+              [src]="item.product.image"
+              [alt]="item.product.name"
+              class="w-16 h-16 object-contain rounded-lg bg-cyber-surface p-2"
+            >
+            <div class="flex-1">
+              <h3 class="font-medium text-cyber-text-primary">{{item.product.name}}</h3>
+              <div class="text-sm text-cyber-text-secondary">
+                الكمية: {{item.quantity}} × {{item.selectedPrice.amount}} {{item.selectedPrice.currency}}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total -->
+        <div class="border-t border-cyber-border pt-4">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-cyber-text-secondary">المجموع الكلي</span>
+            <span class="font-semibold text-cyber-text-primary">{{cartService.getTotal() * 1.15}} ر.س</span>
+          </div>
+          <div class="text-sm text-cyber-text-secondary text-left">شامل ضريبة القيمة المضافة</div>
+        </div>
+
+        <!-- Checkout Button -->
+        <button 
+          (click)="processPayment()"
+          class="w-full bg-cyber-accent-primary text-white py-3 rounded-lg mt-6 hover:bg-cyber-hover-primary transition-colors"
+          [disabled]="!isFormValid() || isProcessing"
+          [class.opacity-50]="!isFormValid() || isProcessing"
+        >
+          <span *ngIf="!isProcessing">إتمام الطلب</span>
+          <span *ngIf="isProcessing">جاري معالجة الطلب...</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phone Verification Dialog -->
+  <app-phone-verification-dialog
+    *ngIf="showVerificationDialog"
+    [phone]="form.phone"
+    (verified)="onPhoneVerified()"
+  ></app-phone-verification-dialog>
 </div>
