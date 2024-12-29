@@ -1,13 +1,12 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { OrderOtpService } from '../../services/order-otp.service';
 import { OtpInputComponent } from '../../../shared/otp/otp-input/otp-input.component';
 
 @Component({
   selector: 'app-order-otp-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, OtpInputComponent],
+  imports: [CommonModule, OtpInputComponent],
   template: `
     <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div class="bg-cyber-card rounded-lg p-6 max-w-md w-full mx-4">

@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { CartService } from '../../../../../services/cart.service';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ProductMainService } from '../../services/product.service';
+import { CartService } from '../../../../services/cart/cart.service';
 import { ProductDetailsSkeletonComponent } from '../../../shared/components/skeletons/product-details-skeleton.component';
+import { ProductImageComponent } from '../../components/product-image/product-image.component';
+import { ProductDetails, RegionWithPrices, RegionPrice, RegionInfo } from '../../../../models/product.types';
 
 @Component({
   selector: 'app-product-details',
@@ -15,18 +18,17 @@ import { ProductDetailsSkeletonComponent } from '../../../shared/components/skel
     CommonModule,
     RouterModule,
     FormsModule,
-    ProductDetailsSkeletonComponent
+    ProductDetailsSkeletonComponent,
+    ProductImageComponent
   ]
 })
 export class ProductDetailsComponent implements OnInit {
-  product?: any;
-  regions: any[] = [];
-  selectedRegionIndex: number = 0;
-  selectedPrice?: { amount: string; currency: string };
+  product?: ProductDetails;
+  regions: RegionWithPrices[] = [];
+  selectedRegionIndex = 0;
+  selectedPrice?: RegionPrice;
   quantity = 1;
-  addedToCart = false;
   loading = true;
-  defaultImage = 'https://app.rasseed.com/files/itunes.jpg';
 
   constructor(
     private route: ActivatedRoute,
@@ -40,17 +42,19 @@ export class ProductDetailsComponent implements OnInit {
     if (uuid) {
       this.loading = true;
       this.productService.getProductById(uuid).subscribe({
-        next: (data) => {
-          if (data) {
-            this.product = data.product;
-            this.regions = data.regions;
-            if (this.regions.length > 0 && this.regions[0].prices.length > 0) {
-              this.selectPrice(this.regions[0].prices[0]);
+        next: (response) => {
+          console.log('API Response:', response);
+          if (response.product) {
+            this.product = response.product;
+            this.regions = response.regions;
+            if (this.regions.length > 0) {
+              this.selectRegion(0);
             }
           }
           this.loading = false;
         },
-        error: () => {
+        error: (error) => {
+          console.error('Error fetching product:', error);
           this.loading = false;
         }
       });
@@ -59,31 +63,72 @@ export class ProductDetailsComponent implements OnInit {
 
   selectRegion(index: number): void {
     this.selectedRegionIndex = index;
-    if (this.regions[index].prices.length > 0) {
-      this.selectPrice(this.regions[index].prices[0]);
-    } else {
-      this.selectedPrice = undefined;
+    this.selectedPrice = undefined;
+    
+    const region = this.regions[index];
+    console.log('Selected region:', region);
+    if (region && region.prices.length > 0) {
+      console.log('Region prices:', region.prices);
+      this.selectPrice(region.prices[0]);
     }
   }
 
-  selectPrice(price: { amount: string; currency: string }): void {
+  selectPrice(price: RegionPrice): void {
+    console.log('Selected price:', price);
     this.selectedPrice = price;
   }
 
-  addToCart(): void {
-    if (this.product && this.selectedPrice) {
-      this.cartService.addToCart(this.product, this.selectedPrice, this.quantity);
-      this.addedToCart = true;
-      setTimeout(() => {
-        this.router.navigate(['/cart']);
-      }, 1000);
+  incrementQuantity(): void {
+    if (this.quantity < 99) {
+      this.quantity++;
     }
   }
 
-  handleImageError(event: Event): void {
-    const img = event.target as HTMLImageElement;
-    if (img) {
-      img.src = this.defaultImage;
+  decrementQuantity(): void {
+    if (this.quantity > 1) {
+      this.quantity--;
     }
+  }
+
+  validateQuantity(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    let value = parseInt(input.value);
+    
+    if (isNaN(value) || value < 1) {
+      value = 1;
+    } else if (value > 99) {
+      value = 99;
+    }
+    
+    this.quantity = value;
+    input.value = value.toString();
+  }
+
+  getCurrentRegion(): RegionInfo | null {
+    if (!this.regions[this.selectedRegionIndex]) return null;
+    return this.regions[this.selectedRegionIndex].region;
+  }
+
+  addToCart(): void {
+    if (this.product && this.selectedPrice && this.getCurrentRegion()) {
+      const region = this.getCurrentRegion()!;
+      this.cartService.addToCart(
+        this.product.uuid,
+        this.quantity,
+        region.code,
+        region.currency_code
+      ).subscribe({
+        next: () => {
+          this.router.navigate(['/cart']);
+        },
+        error: (error) => {
+          console.error('Error adding to cart:', error);
+        }
+      });
+    }
+  }
+
+  buyNow(): void {
+    this.addToCart();
   }
 }

@@ -3,33 +3,18 @@ export interface LoginRequest {
   password: string;
 }
 
-export interface RegisterRequest {
-  first_name: string;
-  last_name: string;
-  mobile_number: string;
+export interface User {
+  name: string;
   email: string;
-  password: string;
-  password_confirmation: string;
-  country?: string;
+  phone: string;
+  mobile_number: string;
 }
 
 export interface AuthResponse {
-  status: string;
+  status: 'success' | 'error';
   message: string;
   data?: {
-    user: {
-      id: number;
-      first_name: string;
-      last_name: string;
-      name: string;
-      mobile_number: string;
-      email: string;
-      country: string;
-      is_phone_verified: boolean;
-      email_verified_at: string | null;
-      created_at: string;
-      updated_at: string;
-    };
+    user: User;
     access_token: string;
     token_type: string;
     requires_otp: boolean;
@@ -37,18 +22,20 @@ export interface AuthResponse {
   timestamp: string;
 }
 
-export interface LoginFormErrors {
-  username: string | null;
-  password: string | null;
-  general: string | null;
+export interface OtpVerificationResponse {
+  success: boolean;
+  status: 'success' | 'error';
+  message: string;
+  data?: {
+    is_phone_verified: boolean;
+    message?: string;
+  };
 }
 
-export interface RegisterFormErrors {
-  first_name: string | null;
-  last_name: string | null;
-  mobile_number: string | null;
-  email: string | null;
-  password: string | null;
-  password_confirmation: string | null;
-  general: string | null;
+export interface RegisterRequest {
+  name: string;
+  email: string;
+  phone: string;
+  password: string;
+  password_confirmation: string;
 }

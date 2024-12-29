@@ -62,6 +62,16 @@ export const routes: Routes = [
     title: 'تفاصيل الطلب'
   },
   {
+    path: 'order/success/:id',
+    loadComponent: () => import('./core/components/order/pages/order-success/order-success.component').then(m => m.OrderSuccessComponent),
+    title: 'تم الطلب بنجاح'
+  },
+  {
+    path: 'order/failed/:id',
+    loadComponent: () => import('./core/components/order/pages/order-failed/order-failed.page').then(m => m.OrderFailedPage),
+    title: 'فشل الطلب'
+  },
+  {
     path: '**',
     redirectTo: '',
     pathMatch: 'full'

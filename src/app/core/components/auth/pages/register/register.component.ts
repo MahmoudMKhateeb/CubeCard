@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from '../../../../services/auth.service';
 import { RegisterRequest } from '../../../../models/auth.models';
 
@@ -13,25 +14,14 @@ import { RegisterRequest } from '../../../../models/auth.models';
 })
 export class RegisterComponent {
   userData: RegisterRequest = {
-    first_name: '',
-    last_name: '',
-    mobile_number: '',
+    name: '',
     email: '',
+    phone: '',
     password: '',
-    password_confirmation: '',
-    country: 'USA'
+    password_confirmation: ''
   };
 
-  errors: { [key: string]: string } = {
-    first_name: '',
-    last_name: '',
-    mobile_number: '',
-    email: '',
-    password: '',
-    password_confirmation: '',
-    general: ''
-  };
-
+  error = '';
   loading = false;
 
   constructor(
@@ -40,68 +30,55 @@ export class RegisterComponent {
   ) {}
 
   onSubmit(): void {
-    if (this.loading) return;
+    if (this.validateForm()) {
+      this.loading = true;
+      this.error = '';
 
-    // Reset errors
-    Object.keys(this.errors).forEach(key => this.errors[key] = '');
-
-    // Basic validation
-    if (!this.validateForm()) return;
-
-    this.loading = true;
-
-    this.authService.register(this.userData).subscribe({
-      next: (response) => {
-        if (response.status === 'success') {
-          this.router.navigate(['/login'], { 
-            queryParams: { registered: 'true' }
-          });
-        } else {
-          this.errors['general'] = response.message || 'حدث خطأ أثناء إنشاء الحساب';
+      this.authService.register(this.userData).subscribe({
+        next: (response) => {
+          if (response.status === 'success') {
+            this.router.navigate(['/login'], {
+              queryParams: { registered: 'true' }
+            });
+          } else {
+            this.error = response.message || 'حدث خطأ أثناء إنشاء الحساب';
+          }
+          this.loading = false;
+        },
+        error: (error) => {
+          this.error = error.error?.message || 'حدث خطأ أثناء إنشاء الحساب';
+          this.loading = false;
         }
-        this.loading = false;
-      },
-      error: (error) => {
-        if (error.error?.errors) {
-          Object.keys(error.error.errors).forEach(key => {
-            this.errors[key] = error.error.errors[key][0];
-          });
-        } else {
-          this.errors['general'] = 'حدث خطأ أثناء إنشاء الحساب';
-        }
-        this.loading = false;
-      }
-    });
+      });
+    }
   }
 
   private validateForm(): boolean {
-    let isValid = true;
+    if (!this.userData.name) {
+      this.error = 'يرجى إدخال الاسم';
+      return false;
+    }
 
-    if (!this.userData.first_name) {
-      this.errors['first_name'] = 'الاسم الأول مطلوب';
-      isValid = false;
-    }
-    if (!this.userData.last_name) {
-      this.errors['last_name'] = 'الاسم الأخير مطلوب';
-      isValid = false;
-    }
-    if (!this.userData.mobile_number) {
-      this.errors['mobile_number'] = 'رقم الجوال مطلوب';
-      isValid = false;
-    }
     if (!this.userData.email) {
-      this.errors['email'] = 'البريد الإلكتروني مطلوب';
-      isValid = false;
-    }
-    if (!this.userData.password) {
-      this.errors['password'] = 'كلمة المرور مطلوبة';
-      isValid = false;
-    }
-    if (this.userData.password !== this.userData.password_confirmation) {
-      this.errors['password_confirmation'] = 'كلمة المرور غير متطابقة';
-      isValid = false;
+      this.error = 'يرجى إدخال البريد الإلكتروني';
+      return false;
     }
 
-    return isValid;
+    if (!this.userData.phone) {
+      this.error = 'يرجى إدخال رقم الجوال';
+      return false;
+    }
+
+    if (!this.userData.password) {
+      this.error = 'يرجى إدخال كلمة المرور';
+      return false;
+    }
+
+    if (this.userData.password !== this.userData.password_confirmation) {
+      this.error = 'كلمة المرور غير متطابقة';
+      return false;
+    }
+
+    return true;
   }
 }

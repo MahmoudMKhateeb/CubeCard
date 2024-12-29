@@ -1,140 +1,80 @@
-<div class="min-h-screen bg-cyber-surface py-8">
-  <div class="container-content max-w-2xl">
-    <div class="bg-cyber-card rounded-lg p-8 shadow-card">
-      <!-- Header -->
+<div class="min-h-screen flex items-center justify-center bg-cyber-background py-8">
+  <div class="max-w-md w-full mx-4">
+    <div class="bg-cyber-card rounded-lg shadow-lg p-8">
       <div class="text-center mb-8">
-        <h1 class="text-2xl font-bold text-cyber-text-primary mb-2">إنشاء حساب جديد</h1>
-        <p class="text-cyber-text-secondary">انضم إلى كيوب كارد اليوم</p>
+        <h1 class="text-2xl font-bold text-cyber-text-primary">إنشاء حساب جديد</h1>
+        <p class="text-cyber-text-secondary mt-2">أهلاً بك في كيوب كارد</p>
       </div>
 
-      <!-- Registration Form -->
-      <form (ngSubmit)="onSubmit()" #registerForm="ngForm" class="space-y-6">
-        <!-- Name Fields -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- First Name -->
-          <div>
-            <label for="first_name" class="block text-sm font-medium text-cyber-text-primary mb-1">
-              الاسم الأول
-              <span class="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              id="first_name"
-              name="first_name"
-              [(ngModel)]="userData.first_name"
-              class="w-full px-4 py-2 bg-cyber-surface border border-cyber-border rounded-lg text-cyber-text-primary focus:outline-none focus:border-cyber-accent-primary"
-              [class.border-red-500]="errors['first_name']"
-              required
-            >
-            <span *ngIf="errors['first_name']" class="text-red-500 text-sm mt-1">
-              {{ errors['first_name'] }}
-            </span>
-          </div>
-
-          <!-- Last Name -->
-          <div>
-            <label for="last_name" class="block text-sm font-medium text-cyber-text-primary mb-1">
-              الاسم الأخير
-              <span class="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              id="last_name"
-              name="last_name"
-              [(ngModel)]="userData.last_name"
-              class="w-full px-4 py-2 bg-cyber-surface border border-cyber-border rounded-lg text-cyber-text-primary focus:outline-none focus:border-cyber-accent-primary"
-              [class.border-red-500]="errors['last_name']"
-              required
-            >
-            <span *ngIf="errors['last_name']" class="text-red-500 text-sm mt-1">
-              {{ errors['last_name'] }}
-            </span>
-          </div>
+      <form (ngSubmit)="onSubmit()" class="space-y-6">
+        <!-- Error Message -->
+        <div *ngIf="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+          <span class="block sm:inline">{{ error }}</span>
         </div>
 
-        <!-- Mobile Number -->
+        <!-- Name Field -->
         <div>
-          <label for="mobile_number" class="block text-sm font-medium text-cyber-text-primary mb-1">
-            رقم الجوال
-            <span class="text-red-500">*</span>
-          </label>
+          <label for="name" class="block text-cyber-text-primary mb-2">الاسم</label>
           <input
-            type="tel"
-            id="mobile_number"
-            name="mobile_number"
-            [(ngModel)]="userData.mobile_number"
+            type="text"
+            id="name"
+            name="name"
+            [(ngModel)]="userData.name"
             class="w-full px-4 py-2 bg-cyber-surface border border-cyber-border rounded-lg text-cyber-text-primary focus:outline-none focus:border-cyber-accent-primary"
-            [class.border-red-500]="errors['mobile_number']"
             required
           >
-          <span *ngIf="errors['mobile_number']" class="text-red-500 text-sm mt-1">
-            {{ errors['mobile_number'] }}
-          </span>
         </div>
 
-        <!-- Email -->
+        <!-- Email Field -->
         <div>
-          <label for="email" class="block text-sm font-medium text-cyber-text-primary mb-1">
-            البريد الإلكتروني
-            <span class="text-red-500">*</span>
-          </label>
+          <label for="email" class="block text-cyber-text-primary mb-2">البريد الإلكتروني</label>
           <input
             type="email"
             id="email"
             name="email"
             [(ngModel)]="userData.email"
             class="w-full px-4 py-2 bg-cyber-surface border border-cyber-border rounded-lg text-cyber-text-primary focus:outline-none focus:border-cyber-accent-primary"
-            [class.border-red-500]="errors['email']"
             required
           >
-          <span *ngIf="errors['email']" class="text-red-500 text-sm mt-1">
-            {{ errors['email'] }}
-          </span>
         </div>
 
-        <!-- Password -->
+        <!-- Phone Field -->
         <div>
-          <label for="password" class="block text-sm font-medium text-cyber-text-primary mb-1">
-            كلمة المرور
-            <span class="text-red-500">*</span>
-          </label>
+          <label for="phone" class="block text-cyber-text-primary mb-2">رقم الجوال</label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            [(ngModel)]="userData.phone"
+            class="w-full px-4 py-2 bg-cyber-surface border border-cyber-border rounded-lg text-cyber-text-primary focus:outline-none focus:border-cyber-accent-primary"
+            required
+          >
+        </div>
+
+        <!-- Password Field -->
+        <div>
+          <label for="password" class="block text-cyber-text-primary mb-2">كلمة المرور</label>
           <input
             type="password"
             id="password"
             name="password"
             [(ngModel)]="userData.password"
             class="w-full px-4 py-2 bg-cyber-surface border border-cyber-border rounded-lg text-cyber-text-primary focus:outline-none focus:border-cyber-accent-primary"
-            [class.border-red-500]="errors['password']"
             required
           >
-          <span *ngIf="errors['password']" class="text-red-500 text-sm mt-1">
-            {{ errors['password'] }}
-          </span>
         </div>
 
-        <!-- Password Confirmation -->
+        <!-- Password Confirmation Field -->
         <div>
-          <label for="password_confirmation" class="block text-sm font-medium text-cyber-text-primary mb-1">
-            تأكيد كلمة المرور
-            <span class="text-red-500">*</span>
-          </label>
+          <label for="password_confirmation" class="block text-cyber-text-primary mb-2">تأكيد كلمة المرور</label>
           <input
             type="password"
             id="password_confirmation"
             name="password_confirmation"
             [(ngModel)]="userData.password_confirmation"
             class="w-full px-4 py-2 bg-cyber-surface border border-cyber-border rounded-lg text-cyber-text-primary focus:outline-none focus:border-cyber-accent-primary"
-            [class.border-red-500]="errors['password_confirmation']"
             required
           >
-          <span *ngIf="errors['password_confirmation']" class="text-red-500 text-sm mt-1">
-            {{ errors['password_confirmation'] }}
-          </span>
-        </div>
-
-        <!-- General Error -->
-        <div *ngIf="errors['general']" class="text-red-500 text-sm text-center">
-          {{ errors['general'] }}
         </div>
 
         <!-- Submit Button -->
@@ -143,8 +83,8 @@
           [disabled]="loading"
           class="w-full bg-cyber-accent-primary text-white py-3 rounded-lg hover:bg-cyber-hover-primary transition-colors disabled:opacity-50"
         >
-          <span *ngIf="!loading">إنشاء حساب</span>
-          <span *ngIf="loading">جاري إنشاء الحساب...</span>
+          <span *ngIf="!loading">إنشاء الحساب</span>
+          <span *ngIf="loading">جاري التسجيل...</span>
         </button>
 
         <!-- Login Link -->

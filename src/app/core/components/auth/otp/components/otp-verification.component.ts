@@ -1,102 +1,70 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { OtpInputComponent } from '../../../shared/otp/otp-input/otp-input.component';
-import { OtpTimerComponent } from './otp-timer.component';
+import { FormsModule } from '@angular/forms';
 import { OtpService } from '../../../../services/otp/otp.service';
+import { OtpVerificationResponse } from '../../../../models/auth.models';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-otp-verification',
+  templateUrl: './otp-verification.component.html',
+  styleUrls: ['./otp-verification.component.css'],
   standalone: true,
-  imports: [CommonModule, OtpInputComponent, OtpTimerComponent],
-  template: `
-    <div class="space-y-6">
-      <div class="text-center">
-        <h2 class="text-xl font-semibold text-cyber-text-primary mb-2">تأكيد رقم الجوال</h2>
-        <p class="text-cyber-text-secondary">
-          تم إرسال رمز التحقق إلى {{ mobileNumber }}
-        </p>
-      </div>
-
-      <app-otp-input
-        #otpInput
-        [error]="errorMessage"
-        (otpComplete)="onOtpComplete($event)">
-      </app-otp-input>
-
-      <div class="flex justify-center">
-        <app-otp-timer
-          [isLoading]="isLoading"
-          (resend)="resendOtp()">
-        </app-otp-timer>
-      </div>
-
-      <button
-        (click)="verifyOtp()"
-        [disabled]="!otp || isLoading"
-        class="w-full bg-cyber-accent-primary text-white py-3 rounded-lg hover:bg-cyber-hover-primary transition-colors disabled:opacity-50"
-      >
-        <span *ngIf="!isLoading">تأكيد</span>
-        <span *ngIf="isLoading">جاري التحقق...</span>
-      </button>
-    </div>
-  `
+  imports: [CommonModule, FormsModule]
 })
 export class OtpVerificationComponent {
-  @Input() mobileNumber = '';
   @Output() verified = new EventEmitter<void>();
-  @ViewChild('otpInput') otpInput!: OtpInputComponent;
-
+  
+  otp: string | null = null;
   errorMessage = '';
   isLoading = false;
-  otp: string | null = null;
+  isResending = false;
 
   constructor(private otpService: OtpService) {}
 
-  onOtpComplete(otp: string): void {
-    this.otp = otp;
-    this.errorMessage = '';
-  }
-
   verifyOtp(): void {
-    if (!this.otp || this.isLoading || !this.mobileNumber) return;
-    
+    if (!this.otp) {
+      this.errorMessage = 'يرجى إدخال رمز التحقق';
+      return;
+    }
+
     this.isLoading = true;
     this.errorMessage = '';
-    
-    this.otpService.verifyOtp(this.mobileNumber, this.otp).subscribe({
-      next: (response) => {
-        if (response.status === 'success' && response.data?.is_phone_verified) {
+
+    this.otpService.verifyOtp(this.otp).subscribe({
+      next: (response: OtpVerificationResponse) => {
+        this.isLoading = false;
+        if ((response.success || response.status === 'success') && response.data?.is_phone_verified) {
           this.verified.emit();
         } else {
-          this.errorMessage = response.data?.message || 'رمز التحقق غير صحيح';
-          this.otpInput.clear();
+          this.errorMessage = response.message || 'رمز التحقق غير صحيح';
+          this.otp = null;
         }
-        this.isLoading = false;
       },
-      error: (error) => {
-        this.errorMessage = error.message;
-        this.otpInput.clear();
+      error: (error: HttpErrorResponse) => {
         this.isLoading = false;
+        this.errorMessage = error.error?.message || 'حدث خطأ أثناء التحقق من الرمز';
+        this.otp = null;
       }
     });
   }
 
   resendOtp(): void {
-    if (this.isLoading || !this.mobileNumber) return;
-    
-    this.isLoading = true;
+    if (this.isResending) return;
+
+    this.isResending = true;
     this.errorMessage = '';
-    
-    this.otpService.sendOtp(this.mobileNumber).subscribe({
-      next: (response) => {
-        if (response.status === 'error') {
+
+    this.otpService.sendOtp().subscribe({
+      next: (response: OtpVerificationResponse) => {
+        this.isResending = false;
+        if (!(response.success || response.status === 'success')) {
           this.errorMessage = response.message || '';
         }
-        this.isLoading = false;
       },
-      error: (error) => {
-        this.errorMessage = error.message;
-        this.isLoading = false;
+      error: (error: HttpErrorResponse) => {
+        this.isResending = false;
+        this.errorMessage = error.error?.message || 'حدث خطأ أثناء إرسال الرمز';
       }
     });
   }

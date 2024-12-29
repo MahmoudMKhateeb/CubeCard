@@ -16,7 +16,14 @@ export class OrderApiService {
     return this.http.post<CreateOrderResponse>(this.apiUrl, orderData);
   }
 
-  getOrderStatus(uuid: string): Observable<Order> {
+  getOrderStatus(uuid: string, sessionId?: string): Observable<Order> {
+    const url = sessionId 
+      ? `${this.apiUrl}/${uuid}/status?session_id=${sessionId}`
+      : `${this.apiUrl}/${uuid}/status`;
+    return this.http.get<Order>(url);
+  }
+
+  getOrder(uuid: string): Observable<Order> {
     return this.http.get<Order>(`${this.apiUrl}/${uuid}`);
   }
 }

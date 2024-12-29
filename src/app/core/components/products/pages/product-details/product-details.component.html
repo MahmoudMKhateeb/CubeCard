@@ -1,121 +1,134 @@
-<div *ngIf="loading">
-    <app-product-details-skeleton></app-product-details-skeleton>
+<!-- Loading State -->
+<div *ngIf="loading" class="min-h-screen bg-cyber-surface flex items-center justify-center">
+    <div class="animate-spin rounded-full h-12 w-12 border-4 border-cyber-accent-primary border-t-transparent"></div>
 </div>
 
-<div *ngIf="!loading" class="min-h-screen bg-cyber-surface py-8">
-    <div class="container-content">
-        <!-- Breadcrumb -->
-        <nav class="mb-8 text-sm" aria-label="Breadcrumb">
-            <ol class="flex items-center gap-2">
-                <li>
-                    <a routerLink="/" class="text-cyber-text-secondary hover:text-cyber-accent-primary">رصيد</a>
-                </li>
-                <li>
-                    <span class="text-cyber-text-secondary mx-2">«</span>
-                    <a routerLink="/categories" class="text-cyber-text-secondary hover:text-cyber-accent-primary">المتاجر الرقمية</a>
-                </li>
-                <li>
-                    <span class="text-cyber-text-secondary mx-2">«</span>
-                    <span class="text-cyber-text-secondary">{{ regions[selectedRegionIndex]?.region || 'Region' }}</span>
-                </li>
-            </ol>
-        </nav>
+<!-- Main Content -->
+<div *ngIf="!loading" class="min-h-screen bg-cyber-surface p-4" dir="rtl">
+    <!-- Breadcrumb -->
+    <div class="container mx-auto flex items-center text-sm mb-6">
+        <a routerLink="/" class="text-cyber-text-secondary hover:text-cyber-accent-primary">رصيد</a>
+        <span class="mx-2 text-cyber-text-secondary">«</span>
+        <a routerLink="/categories" class="text-cyber-text-secondary hover:text-cyber-accent-primary">الألعاب</a>
+        <span class="mx-2 text-cyber-text-secondary">«</span>
+        <span class="text-cyber-text-secondary">{{ product?.name }}</span>
+    </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Left Column - Product Image -->
-            <div class="lg:col-span-1">
-                <div class="bg-cyber-card rounded-lg p-6">
-                    <img [src]="product?.image || defaultImage"
-                         [alt]="product?.name"
-                         class="w-full rounded-lg"
-                         (error)="handleImageError($event)">
-
-                    <!-- Features Section -->
-                    <div *ngIf="product?.features?.length" class="mt-6 pt-6 border-t border-cyber-border">
-                        <h3 class="text-lg font-medium text-cyber-text-primary mb-4">المميزات</h3>
-                        <ul class="space-y-3">
-                            <li *ngFor="let feature of product.features"
-                                class="flex items-center gap-2 text-cyber-text-secondary">
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                     class="h-5 w-5 text-cyber-accent-primary flex-shrink-0"
-                                     fill="none"
-                                     viewBox="0 0 24 24"
-                                     stroke="currentColor">
-                                    <path stroke-linecap="round"
-                                          stroke-linejoin="round"
-                                          stroke-width="2"
-                                          d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span>{{ feature }}</span>
-                            </li>
-                        </ul>
-                    </div>
+    <!-- Product Details -->
+    <div class="container mx-auto max-w-5xl">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Right Column - Product Image -->
+            <div>
+                <div class="bg-cyber-surface-secondary rounded-lg p-4 border border-cyber-border max-w-md mx-auto">
+                    <img 
+                        [src]="product?.image" 
+                        [alt]="product?.name"
+                        class="w-full h-auto max-h-80 object-contain"
+                    >
                 </div>
             </div>
 
-            <!-- Right Column - Product Details -->
-            <div class="lg:col-span-2">
-                <div class="bg-cyber-card rounded-lg p-6">
-                    <!-- Product Name and Discount -->
-                    <div class="flex justify-between items-start mb-6">
-                        <h1 class="text-2xl font-bold text-cyber-text-primary">{{ product?.name }}</h1>
-                        <div *ngIf="product?.discount"
-                             class="bg-cyber-accent-primary bg-opacity-10 text-cyber-accent-primary px-3 py-1 rounded-full text-sm">
-                            خصم {{ product.discount }}%
-                        </div>
+            <!-- Left Column - Store Selection -->
+            <div class="space-y-6">
+                <h1 class="text-2xl font-bold text-cyber-text-primary">{{ product?.name }}</h1>
+                
+                <ng-container *ngIf="product?.description">
+                    <div class="text-cyber-text-secondary">
+                        {{ product?.description }}
                     </div>
+                </ng-container>
 
-                    <!-- Region Selection -->
-                    <div class="flex gap-4 mb-8">
-                        <button *ngFor="let region of regions; let i = index"
-                                (click)="selectRegion(i)"
-                                [class.bg-cyber-accent-primary]="selectedRegionIndex === i"
-                                class="flex items-center gap-2 px-4 py-2 rounded-lg border border-cyber-border hover:border-cyber-accent-primary transition-colors">
-                            <span class="text-cyber-text-primary">{{ region.region }}</span>
-                        </button>
-                    </div>
+                <h2 class="text-xl font-semibold mb-4 text-cyber-text-primary">اختر المتجر</h2>
+                <div class="flex flex-wrap gap-3">
+                    <button 
+                        *ngFor="let region of regions; let i = index"
+                        class="px-6 py-3 rounded-lg border transition-all text-center"
+                        [class.border-cyber-accent-primary]="selectedRegionIndex === i"
+                        [class.bg-cyber-surface-secondary]="selectedRegionIndex === i"
+                        [class.border-cyber-border]="selectedRegionIndex !== i"
+                        [class.bg-cyber-surface]="selectedRegionIndex !== i"
+                        [class.text-cyber-text-primary]="selectedRegionIndex === i"
+                        [class.text-cyber-text-secondary]="selectedRegionIndex !== i"
+                        (click)="selectRegion(i)"
+                    >
+                        {{ region.region.name }}
+                    </button>
+                </div>
 
-                    <!-- Card Value Selection -->
-                    <div class="mb-8">
-                        <h2 class="text-xl text-cyber-text-primary mb-4">قيمة البطاقة</h2>
-                        <div class="grid grid-cols-5 gap-3">
-                            <button *ngFor="let price of regions[selectedRegionIndex]?.prices"
-                                    (click)="selectPrice(price)"
-                                    [class.bg-cyber-accent-primary]="selectedPrice?.amount === price.amount"
-                                    class="px-4 py-2 rounded-lg border border-cyber-border hover:border-cyber-accent-primary transition-colors text-cyber-text-primary">
-                                {{ price.amount }} {{ price.currency }}
+                <div class="space-y-4">
+                    <h2 class="text-xl font-semibold text-cyber-text-primary">قيمة البطاقة</h2>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        <ng-container *ngIf="regions[selectedRegionIndex] as selectedRegion">
+                            <button 
+                                *ngFor="let price of selectedRegion.prices"
+                                class="px-4 py-2 rounded-lg text-sm transition-all"
+                                [class.bg-cyber-accent-primary]="selectedPrice === price"
+                                [class.text-white]="selectedPrice === price"
+                                [class.bg-cyber-surface-secondary]="selectedPrice !== price"
+                                [class.text-cyber-text-secondary]="selectedPrice !== price"
+                                [class.hover:bg-cyber-accent-primary]="selectedPrice !== price"
+                                [class.hover:bg-opacity-10]="selectedPrice !== price"
+                                (click)="selectPrice(price)"
+                            >
+                                {{ price.display_price }} {{ price.display_currency }}
                             </button>
-                        </div>
+                        </ng-container>
                     </div>
+                </div>
 
-                    <!-- Quantity Selection -->
-                    <div class="mb-8">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-cyber-text-secondary">قيمة شحن الرصيد لفئة {{ selectedPrice?.amount || '...' }}</span>
-                            <span class="text-cyber-text-secondary">يمكنك طلب لغاية (1) بطاقات من هذا النوع</span>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-cyber-text-primary">الكمية</span>
+                        <div class="flex items-center gap-2">
+                            <button 
+                                (click)="decrementQuantity()" 
+                                class="w-8 h-8 rounded-full bg-cyber-surface-secondary text-cyber-text-primary flex items-center justify-center hover:bg-cyber-accent-primary hover:text-white transition-colors"
+                            >-</button>
+                            <input 
+                                type="number" 
+                                [(ngModel)]="quantity" 
+                                (change)="validateQuantity($event)"
+                                class="w-16 px-2 py-1 text-center border border-cyber-border bg-cyber-surface text-cyber-text-primary rounded-lg focus:border-cyber-accent-primary focus:ring-1 focus:ring-cyber-accent-primary"
+                                min="1" 
+                                max="99"
+                            >
+                            <button 
+                                (click)="incrementQuantity()"
+                                class="w-8 h-8 rounded-full bg-cyber-surface-secondary text-cyber-text-primary flex items-center justify-center hover:bg-cyber-accent-primary hover:text-white transition-colors"
+                            >+</button>
                         </div>
-                        <div class="flex items-center gap-4">
-                            <input type="number"
-                                   [(ngModel)]="quantity"
-                                   min="1"
-                                   max="1"
-                                   class="w-20 px-3 py-2 bg-cyber-surface border border-cyber-border rounded-lg text-center text-cyber-text-primary">
-                            <span class="text-cyber-accent-primary text-2xl font-bold">{{ selectedPrice?.amount || '...' }} ر.س</span>
-                        </div>
-                        <p class="text-cyber-text-secondary mt-2">شامل قيمة الضريبة المضافة 15%</p>
                     </div>
+                </div>
 
-                    <!-- Action Buttons -->
-                    <div class="flex gap-4">
-                        <button (click)="addToCart()"
-                                class="flex-1 bg-cyber-accent-primary text-white py-3 rounded-lg hover:bg-cyber-hover-primary transition-colors">
-                            أضف إلى السلة
-                        </button>
-                        <a routerLink="/cart"
-                           class="flex-1 bg-cyber-surface text-cyber-text-primary py-3 rounded-lg hover:bg-cyber-card transition-colors text-center">
-                            الذهاب للسلة
-                        </a>
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="text-cyber-text-primary">السعر</span>
+                        <div class="flex flex-col items-end" *ngIf="selectedPrice">
+                            <div class="text-2xl font-bold text-cyber-accent-primary">
+                                {{ selectedPrice.display_price }} {{ selectedPrice.display_currency }}
+                            </div>
+                            <div class="text-sm text-cyber-text-secondary" *ngIf="selectedPrice.display_currency !== 'SAR'">
+                                ما يعادل {{ selectedPrice.sar_price }} ريال سعودي
+                            </div>
+                        </div>
                     </div>
+                </div>
+
+                <div class="flex gap-4">
+                    <button 
+                        class="flex-1 bg-cyber-accent-primary text-white px-6 py-2 rounded-lg hover:bg-opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        [disabled]="!selectedPrice || quantity < 1"
+                        (click)="addToCart()"
+                    >
+                        أضف إلى السلة
+                    </button>
+                    <button 
+                        class="flex-1 border border-cyber-accent-primary text-cyber-accent-primary px-6 py-2 rounded-lg hover:bg-cyber-accent-primary hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        [disabled]="!selectedPrice || quantity < 1"
+                        (click)="buyNow()"
+                    >
+                        اشتري الآن
+                    </button>
                 </div>
             </div>
         </div>

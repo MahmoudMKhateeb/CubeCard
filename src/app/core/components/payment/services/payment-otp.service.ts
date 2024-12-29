@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { AppConstants } from '../../../constants/app.constants';
+import { AuthService } from '../../../services/auth.service';
 
 export interface PaymentOtpResponse {
   status: string;
@@ -19,36 +20,50 @@ export interface PaymentOtpResponse {
 })
 export class PaymentOtpService {
   private readonly apiUrl = AppConstants.apiUrl;
-  private verifiedPhones = new BehaviorSubject<Set<string>>(new Set());
+  private verifiedPayments = new BehaviorSubject<Set<string>>(new Set());
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService
+  ) {}
 
-  verifyPaymentOtp(phone: string, otp: string): Observable<PaymentOtpResponse> {
+  verifyPaymentOtp(otp: string): Observable<PaymentOtpResponse> {
+    const user = this.authService.getCurrentUser();
+    if (!user?.mobile_number) {
+      return throwError(() => new Error('رقم الجوال غير متوفر'));
+    }
+
     return this.http.post<PaymentOtpResponse>(`${this.apiUrl}payment/verify-otp`, {
-      mobile_number: phone,
+      mobile_number: user.mobile_number,
       otp
     }).pipe(
       tap(response => {
         if (response.status === 'success' && response.data?.is_verified) {
-          const phones = this.verifiedPhones.value;
-          phones.add(phone);
-          this.verifiedPhones.next(phones);
+          const payments = this.verifiedPayments.value;
+          payments.add(user.mobile_number);
+          this.verifiedPayments.next(payments);
         }
       }),
       catchError(this.handleError)
     );
   }
 
-  sendPaymentOtp(phone: string): Observable<PaymentOtpResponse> {
+  sendPaymentOtp(): Observable<PaymentOtpResponse> {
+    const user = this.authService.getCurrentUser();
+    if (!user?.mobile_number) {
+      return throwError(() => new Error('رقم الجوال غير متوفر'));
+    }
+
     return this.http.post<PaymentOtpResponse>(`${this.apiUrl}payment/send-otp`, {
-      mobile_number: phone
+      mobile_number: user.mobile_number
     }).pipe(
       catchError(this.handleError)
     );
   }
 
-  isPhoneVerified(phone: string): boolean {
-    return this.verifiedPhones.value.has(phone);
+  isPaymentVerified(): boolean {
+    const user = this.authService.getCurrentUser();
+    return user?.mobile_number ? this.verifiedPayments.value.has(user.mobile_number) : false;
   }
 
   private handleError(error: any) {

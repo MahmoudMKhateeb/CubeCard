@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { Product } from '../../shared/models/product.interface';
+import { Observable } from 'rxjs';
+import { ProductDetailsResponse, ProductListResponse, ProductListItem } from '../../../models/product.types';
 import { HttpClient } from "@angular/common/http";
 import { map } from "rxjs/operators";
-import { AppConstants } from "../../../../core/constants/app.constants";
+import { AppConstants } from "../../../constants/app.constants";
 
 @Injectable({
   providedIn: 'root'
@@ -14,37 +14,124 @@ export class ProductMainService {
 
   constructor(private http: HttpClient) {}
 
-  getProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.apiUrl}products`).pipe(
-      map(products => products.map(product => ({
-        ...product,
-        image: `${this.imagesUrl}/${product.image}`
-      })))
+  getProducts(page: number = 1): Observable<ProductListResponse> {
+    return this.http.get<ProductListItem[]>(`${this.apiUrl}products?page=${page}`).pipe(
+      map(products => {
+        if (!products) {
+          return {
+            status: true,
+            message: 'No data received',
+            data: {
+              products: [],
+              pagination: {
+                current_page: 1,
+                total_pages: 1,
+                total_items: 0,
+                per_page: 10
+              }
+            }
+          };
+        }
+        return {
+          status: true,
+          message: 'Products retrieved successfully',
+          data: {
+            products: products.map(product => ({
+              ...product,
+              image: product.image ? `${this.imagesUrl}/${product.image}` : product.image
+            })),
+            pagination: {
+              current_page: page,
+              total_pages: 1,
+              total_items: products.length,
+              per_page: 10
+            }
+          }
+        };
+      })
     );
   }
 
-  getProductByCatId(id: number): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.apiUrl}products/GetProductByCategory/${id}`).pipe(
-      map(products => products.map(product => ({
-        ...product,
-        image: `${this.imagesUrl}/${product.image}`
-      })))
+  getProductByCatId(id: number, page: number = 1): Observable<ProductListResponse> {
+    return this.http.get<ProductListItem[]>(`${this.apiUrl}products/GetProductByCategory/${id}?page=${page}`).pipe(
+      map(products => {
+        if (!products) {
+          return {
+            status: true,
+            message: 'No data received',
+            data: {
+              products: [],
+              pagination: {
+                current_page: 1,
+                total_pages: 1,
+                total_items: 0,
+                per_page: 10
+              }
+            }
+          };
+        }
+        return {
+          status: true,
+          message: 'Products retrieved successfully',
+          data: {
+            products: products.map(product => ({
+              ...product,
+              image: product.image ? `${this.imagesUrl}/${product.image}` : product.image
+            })),
+            pagination: {
+              current_page: page,
+              total_pages: 1,
+              total_items: products.length,
+              per_page: 10
+            }
+          }
+        };
+      })
     );
   }
 
-  getProductById(uuid: string): Observable<any> {
-    return this.http.get<Product>(`${this.apiUrl}products/${uuid}`).pipe(
-      map(product => ({
-        ...product,
-        image: `${this.imagesUrl}/${product.image}`
+  getProductById(uuid: string): Observable<ProductDetailsResponse> {
+    return this.http.get<ProductDetailsResponse>(`${this.apiUrl}products/${uuid}`);
+  }
+
+  searchProducts(query: string, page: number = 1): Observable<ProductListResponse> {
+    if (!query.trim()) {
+      return this.http.get<ProductListItem[]>(`${this.apiUrl}products/search?page=${page}`).pipe(
+        map(products => ({
+          status: true,
+          message: 'Products retrieved successfully',
+          data: {
+            products: products.map(product => ({
+              ...product,
+              image: product.image ? `${this.imagesUrl}/${product.image}` : product.image
+            })),
+            pagination: {
+              current_page: page,
+              total_pages: 1,
+              total_items: products.length,
+              per_page: 10
+            }
+          }
+        }))
+      );
+    }
+    return this.http.get<ProductListItem[]>(`${this.apiUrl}products/search?query=${query}&page=${page}`).pipe(
+      map(products => ({
+        status: true,
+        message: 'Products retrieved successfully',
+        data: {
+          products: products.map(product => ({
+            ...product,
+            image: product.image ? `${this.imagesUrl}/${product.image}` : product.image
+          })),
+          pagination: {
+            current_page: page,
+            total_pages: 1,
+            total_items: products.length,
+            per_page: 10
+          }
+        }
       }))
     );
-  }
-
-  searchProducts(query: string): Observable<Product[]> {
-    if (!query.trim()) {
-      return this.http.get<Product[]>(`${this.apiUrl}products/search`);
-    }
-    return this.http.get<Product[]>(`${this.apiUrl}products/search?query=${query}`);
   }
 }

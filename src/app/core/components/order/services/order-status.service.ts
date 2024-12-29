@@ -1,124 +1,54 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, Subscription, interval } from 'rxjs';
-import { switchMap, takeWhile, catchError } from 'rxjs/operators';
-import { OrderApiService } from './order-api.service';
-import { CreateOrderResponse, Order, OrderStatus } from '../models/order.types';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable, interval, Subscription } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import { AppConstants } from '../../../../app.constants';
+import { Order, OrderStatusResponse } from '../models/order.types';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrderStatusService {
-  private currentOrder = new BehaviorSubject<Order | null>(null);
-  private statusCheckSubscription?: Subscription;
-  private readonly POLLING_INTERVAL = 5000; // 5 seconds
-  stripe: any;
+  private currentOrder = new BehaviorSubject<OrderStatusResponse | null>(null);
+  private pollingSubscription?: Subscription;
 
-  constructor(
-    private orderApi: OrderApiService,
-    private router: Router
-  ) {
-    this.injectStripeScript();
+  constructor(private http: HttpClient) {}
+
+  getOrderStatus(uuid: string): Observable<OrderStatusResponse> {
+    return this.http.get<OrderStatusResponse>(`${AppConstants.apiUrl}orders/${uuid}/status`);
   }
 
-  createOrder(orderData: any): void {
-    this.orderApi.createOrder(orderData).subscribe({
-      next: (response: CreateOrderResponse) => {
-        if (response.success) {
-          this.redirectToCheckout(response.checkout_session_id);
-        } else {
-          this.router.navigate(['/order/failed', response.order_uuid]);
-          this.startStatusPolling(response.order_uuid);
-        }
-      },
-      error: () => {
-        this.router.navigate(['/order/failed']);
-      }
-    });
-  }
-
-  private startStatusPolling(orderUuid: string): void {
-    this.stopStatusPolling();
-
-    this.statusCheckSubscription = interval(this.POLLING_INTERVAL).pipe(
-      switchMap(() => this.orderApi.getOrderStatus(orderUuid)),
-      takeWhile((order: Order) => 
-        order.status === 'inProgress' || order.status === 'onHold', 
-        true
-      ),
-      catchError(error => {
-        console.error('Error polling order status:', error);
-        this.router.navigate(['/order/failed']);
-        throw error;
-      })
-    ).subscribe((order: Order) => {
-      this.currentOrder.next(order);
-      this.navigateBasedOnStatus(order.status);
-    });
-  }
-
-  private stopStatusPolling(): void {
-    if (this.statusCheckSubscription) {
-      this.statusCheckSubscription.unsubscribe();
-    }
-  }
-
-  private navigateBasedOnStatus(status: OrderStatus): void {
-    const order = this.currentOrder.getValue();
-    if (!order) return;
-
-    switch (status) {
-      case 'success':
-        this.router.navigate(['/order/success', order.uuid]);
-        this.stopStatusPolling();
-        break;
-      case 'failed':
-      case 'contactSupport':
-        this.router.navigate(['/order/failed', order.uuid]);
-        this.stopStatusPolling();
-        break;
-    }
-  }
-
-  getCurrentOrder(): Observable<Order | null> {
+  getCurrentOrder(): Observable<OrderStatusResponse | null> {
     return this.currentOrder.asObservable();
   }
 
-  getOrderStatus(uuid: string): Observable<Order> {
-    return this.orderApi.getOrderStatus(uuid);
-  }
-
-  private injectStripeScript(): void {
-    if (!document.getElementById('stripe-script')) {
-      const script = document.createElement('script');
-      script.id = 'stripe-script';
-      script.src = 'https://js.stripe.com/v3/';
-      script.onload = () => {
-        this.stripe = (window as any).Stripe('pk_test_51OT1WnFVQKl8ccWfT1mzxKFA7xilfqxOcNjui1qwROWODAcYymHKBpZgDj3HZRhlaG5E2FjZQisOcV47gdA1KSrF00ZxHTMzEc');
-      };
-      document.body.appendChild(script);
-    }
-  }
-
-  async redirectToCheckout(sessionId: string): Promise<void> {
-    try {
-      if (!this.stripe) {
-        console.error('Stripe is not initialized.');
-        return;
-      }
-
-      const result = await this.stripe.redirectToCheckout({ sessionId });
-      if (result.error) {
-        console.error('Error redirecting to Checkout:', result.error.message);
-        alert('حدث خطأ أثناء معالجة الدفع.');
-      }
-    } catch (error) {
-      console.error('Unexpected error:', error);
-      alert('حدث خطأ أثناء معالجة الدفع.');
-    }
-  }
-
-  ngOnDestroy(): void {
+  startStatusPolling(uuid: string): void {
+    // Stop any existing polling
     this.stopStatusPolling();
+
+    // Start polling every 5 seconds
+    this.pollingSubscription = interval(5000).pipe(
+      switchMap(() => this.getOrderStatus(uuid))
+    ).subscribe({
+      next: (response) => {
+        this.currentOrder.next(response);
+        
+        // Stop polling if order is in a final state
+        if (response.data.status === 'success' || response.data.status === 'failed' || response.data.status === 'contactSupport') {
+          this.stopStatusPolling();
+        }
+      },
+      error: (error) => {
+        console.error('Error polling order status:', error);
+        this.stopStatusPolling();
+      }
+    });
+  }
+
+  stopStatusPolling(): void {
+    if (this.pollingSubscription) {
+      this.pollingSubscription.unsubscribe();
+      this.pollingSubscription = undefined;
+    }
   }
 }

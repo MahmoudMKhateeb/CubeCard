@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { CartService } from '../../../../../services/cart.service';
-import { map } from 'rxjs/operators';
+import { CartService } from '../../../../services/cart/cart.service';
 
 @Component({
   selector: 'app-cart-icon',
@@ -20,18 +19,16 @@ import { map } from 'rxjs/operators';
               stroke-width="2"
               d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
       </svg>
-      <span *ngIf="(cartItemCount$ | async) && (cartItemCount$ | async)! > 0"
-            class="absolute -top-2 -right-2 bg-cyber-accent-primary text-white text-xs w-5 h-5
-                   flex items-center justify-center rounded-full">
-        {{cartItemCount$ | async}}
-      </span>
+      <ng-container *ngIf="cartService.cart$ | async as cart">
+        <span *ngIf="cart.items.length > 0"
+              class="absolute -top-2 -right-2 bg-cyber-accent-primary text-white text-xs w-5 h-5
+                     flex items-center justify-center rounded-full">
+          {{cart.items.length}}
+        </span>
+      </ng-container>
     </button>
   `
 })
 export class CartIconComponent {
-  cartItemCount$ = this.cartService.getCartItems().pipe(
-    map(items => items.reduce((total, item) => total + item.quantity, 0))
-  );
-
-  constructor(private cartService: CartService) {}
+  constructor(public cartService: CartService) {}
 }

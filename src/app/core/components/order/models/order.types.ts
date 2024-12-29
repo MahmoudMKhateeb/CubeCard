@@ -1,41 +1,47 @@
 export type OrderStatus = 'inProgress' | 'success' | 'failed' | 'onHold' | 'contactSupport' | 'pending';
+export type PaymentStatus = 'processing' | 'completed' | 'failed';
 
 export interface SerialKey {
-  id: number;
-  order_item_id: number;
   key: string;
-  is_used: number;
-  created_at: string;
-  updated_at: string;
 }
 
 export interface OrderItem {
-  id: number;
-  product_name: string;
-  order_id: number;
   product_uuid: string;
+  product_name: string;
+  product_image?: string;
   quantity: number;
   price: string;
   region: string;
   currency: string;
-  created_at: string;
-  updated_at: string;
-  serial_keys: SerialKey[];
+  serial_keys?: string[];
+  subtotal: number;
+  display_price: string;
+  display_currency: string;
+  sar_price: string;
 }
 
 export interface Order {
-  id: number;
   uuid: string;
   customer_phone: string;
   customer_name: string;
   customer_email: string;
-  status: OrderStatus;
-  total_amount: string;
+  total_amount: number;
   payment_method: string;
   order_notes: string;
   created_at: string;
   updated_at: string;
   items: OrderItem[];
+}
+
+export interface OrderStatusResponse {
+  status: 'success' | 'error';
+  message: string;
+  data: {
+    status: OrderStatus;
+    payment_status: PaymentStatus;
+    order: Order;
+  };
+  timestamp: string;
 }
 
 export interface CreateOrderResponse {

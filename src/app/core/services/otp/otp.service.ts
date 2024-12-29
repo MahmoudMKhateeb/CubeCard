@@ -1,65 +1,57 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
-import { AppConstants } from '../../constants/app.constants';
-
-export interface OtpResponse {
-  status: string;
-  message: string | null;
-  data: {
-    message: string;
-    is_phone_verified: boolean;
-  };
-  timestamp: string;
-}
+import { tap, catchError } from 'rxjs/operators';
+import { OtpApiService } from './otp-api.service';
+import { AuthService } from '../auth.service';
+import { OtpVerificationResponse } from '../../models/auth.models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OtpService {
-  private readonly apiUrl = AppConstants.apiUrl;
   private verifiedPhones = new BehaviorSubject<Set<string>>(new Set());
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private otpApi: OtpApiService,
+    private authService: AuthService
+  ) {}
 
-  verifyOtp(phone: string, otp: string): Observable<OtpResponse> {
-    return this.http.post<OtpResponse>(`${this.apiUrl}otp/verify`, {
-      mobile_number: phone,
-      otp
-    }).pipe(
-      tap(response => {
-        if (response.status === 'success' && response.data?.is_phone_verified) {
-          const phones = this.verifiedPhones.value;
-          phones.add(phone);
-          this.verifiedPhones.next(phones);
-        }
-      }),
-      catchError(this.handleError)
-    );
-  }
-
-  sendOtp(phone: string): Observable<OtpResponse> {
-    return this.http.post<OtpResponse>(`${this.apiUrl}otp/send`, {
-      mobile_number: phone
-    }).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  isPhoneVerified(phone: string): boolean {
-    return this.verifiedPhones.value.has(phone);
-  }
-
-  private handleError(error: any) {
-    let errorMessage = 'حدث خطأ غير متوقع';
+  verifyOtp(otp: string): Observable<OtpVerificationResponse> {
+    const user = this.authService.getCurrentUser();
+    const phoneNumber = user?.mobile_number || user?.phone;
     
-    if (error.error?.message) {
-      errorMessage = error.error.message;
-    } else if (error.error instanceof ErrorEvent) {
-      errorMessage = 'خطأ في الاتصال بالخادم';
+    if (!phoneNumber) {
+      return throwError(() => new Error('رقم الجوال غير متوفر'));
     }
 
-    return throwError(() => new Error(errorMessage));
+    return this.otpApi.verifyOtp(otp, phoneNumber).pipe(
+      tap(response => {
+        if ((response.success || response.status === 'success') && response.data?.is_phone_verified) {
+          const phones = this.verifiedPhones.value;
+          phones.add(phoneNumber);
+          this.verifiedPhones.next(phones);
+          this.authService.updateOtpVerificationState(true);
+        }
+      }),
+      catchError(error => {
+        console.error('OTP verification error:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  sendOtp(): Observable<OtpVerificationResponse> {
+    return this.otpApi.sendOtp().pipe(
+      catchError(error => {
+        console.error('Send OTP error:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  isPhoneVerified(): boolean {
+    const user = this.authService.getCurrentUser();
+    const phoneNumber = user?.mobile_number || user?.phone;
+    return phoneNumber ? this.verifiedPhones.value.has(phoneNumber) : false;
   }
 }

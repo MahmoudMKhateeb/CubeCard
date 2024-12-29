@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OtpInputComponent } from '../../../shared/otp/otp-input/otp-input.component';
-import { PaymentOtpService } from '../../services/payment-otp.service';
+import { OtpService } from '../../../../services/otp/otp.service';
+import { AuthService } from '../../../../services/auth.service';
 
 @Component({
   selector: 'app-payment-otp-dialog',
@@ -10,9 +11,9 @@ import { PaymentOtpService } from '../../services/payment-otp.service';
   template: `
     <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div class="bg-cyber-card rounded-lg p-6 max-w-md w-full mx-4">
-        <h2 class="text-xl font-semibold text-cyber-text-primary mb-4">تأكيد رقم الجوال</h2>
+        <h2 class="text-xl font-semibold text-cyber-text-primary mb-4">تأكيد الطلب</h2>
         <p class="text-cyber-text-secondary mb-6">
-          تم إرسال رمز التحقق إلى رقم جوالك {{phone}}
+          تم إرسال رمز التحقق إلى رقم جوالك {{phoneNumber}} للتأكد من طلبك
         </p>
 
         <app-otp-input
@@ -38,8 +39,7 @@ import { PaymentOtpService } from '../../services/payment-otp.service';
     </div>
   `
 })
-export class PaymentOtpDialogComponent {
-  @Input() phone!: string;
+export class PaymentOtpDialogComponent implements OnInit, OnDestroy {
   @Output() verified = new EventEmitter<void>();
   @Output() cancelled = new EventEmitter<void>();
 
@@ -47,16 +47,33 @@ export class PaymentOtpDialogComponent {
   loading = false;
   countdown = 60;
   resendDisabled = true;
+  phoneNumber = '';
   private countdownInterval?: number;
 
-  constructor(private otpService: PaymentOtpService) {}
+  constructor(
+    private otpService: OtpService,
+    private authService: AuthService
+  ) {
+    const user = this.authService.getCurrentUser();
+    this.phoneNumber = user?.mobile_number || '';
+  }
 
   ngOnInit(): void {
     this.startCountdown();
+    this.sendInitialOtp();
   }
 
   ngOnDestroy(): void {
     this.stopCountdown();
+  }
+
+  private sendInitialOtp(): void {
+    this.otpService.sendOtp().subscribe({
+      error: (err) => {
+        this.error = err.message;
+        this.cancelled.emit();
+      }
+    });
   }
 
   verifyOtp(otp: string): void {
@@ -65,7 +82,7 @@ export class PaymentOtpDialogComponent {
     this.loading = true;
     this.error = '';
 
-    this.otpService.verifyPaymentOtp(this.phone, otp).subscribe({
+    this.otpService.verifyOtp(otp).subscribe({
       next: (response) => {
         if (response.status === 'success' && response.data?.is_verified) {
           this.verified.emit();
@@ -87,7 +104,7 @@ export class PaymentOtpDialogComponent {
     this.loading = true;
     this.error = '';
 
-    this.otpService.sendPaymentOtp(this.phone).subscribe({
+    this.otpService.sendOtp().subscribe({
       next: () => {
         this.startCountdown();
         this.loading = false;
