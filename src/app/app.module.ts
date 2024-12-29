@@ -4,7 +4,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AppRoutingModule } from './app-routing.module';
 import { NgEventBus } from "ng-event-bus";
 import { IonicModule } from '@ionic/angular';
 
@@ -41,7 +40,6 @@ import { OrderFailedPage } from './core/components/order/pages/order-failed/orde
     HttpClientModule,
     FormsModule,
     RouterModule,
-    AppRoutingModule,
     CommonModule,
     IonicModule.forRoot(),
     // Standalone Components

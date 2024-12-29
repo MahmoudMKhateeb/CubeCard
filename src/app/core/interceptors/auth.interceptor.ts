@@ -5,6 +5,17 @@ import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { AppConstants } from '../constants/app.constants';
 
+const PROTECTED_ROUTES = [
+  `${AppConstants.apiUrl}user`,
+  `${AppConstants.apiUrl}orders`,
+  `${AppConstants.apiUrl}cart`,
+  `${AppConstants.apiUrl}checkout`
+];
+
+const isProtectedRoute = (url: string): boolean => {
+  return PROTECTED_ROUTES.some(route => url.startsWith(route));
+};
+
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const token = authService.getToken();
@@ -27,14 +38,3 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     })
   );
 };
-
-function isProtectedRoute(url: string): boolean {
-  const protectedRoutes = [
-    `${AppConstants.apiUrl}user`,
-    `${AppConstants.apiUrl}orders`,
-    `${AppConstants.apiUrl}cart`,
-    `${AppConstants.apiUrl}checkout`
-  ];
-  
-  return protectedRoutes.some(route => url.startsWith(route));
-}

@@ -30,12 +30,22 @@ export class AuthService {
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
     const isOtpVerified = localStorage.getItem('isOtpVerified') === 'true';
+    
     if (token && userData && isOtpVerified) {
-      this.isAuthenticatedSubject.next(true);
-      this.isOtpVerifiedSubject.next(isOtpVerified);
       this.currentUserSubject.next(JSON.parse(userData));
+      this.isAuthenticatedSubject.next(true);
+      this.isOtpVerifiedSubject.next(true);
+      
+      // Validate token in the background
+      this.validateToken(token).subscribe({
+        error: () => {
+          // Only clear auth state on validation error, don't redirect
+          this.clearAuthState();
+        }
+      });
     } else {
-      this.logout();
+      // Just clear the auth state without redirecting
+      this.clearAuthState();
     }
   }
 
@@ -80,7 +90,7 @@ export class AuthService {
     }
   }
 
-  logout(): void {
+  private clearAuthState(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     localStorage.removeItem('isOtpVerified');
@@ -90,6 +100,10 @@ export class AuthService {
     this.isOtpVerifiedSubject.next(false);
     this.currentUserSubject.next(null);
     this.tempAuthData = null;
+  }
+
+  logout(): void {
+    this.clearAuthState();
     this.router.navigate(['/login']);
   }
 
@@ -120,7 +134,7 @@ export class AuthService {
           this.currentUserSubject.next(response.data.user);
           this.isAuthenticatedSubject.next(true);
         } else {
-          this.logout();
+          this.clearAuthState();
         }
       }),
       map(response => response.status === 'success')

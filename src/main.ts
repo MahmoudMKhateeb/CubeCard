@@ -6,6 +6,7 @@ import { routes } from './app/app.routes';
 import { authInterceptor } from './app/core/interceptors/auth.interceptor';
 import { importProvidersFrom } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
+import { NgEventBus } from 'ng-event-bus';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -18,6 +19,7 @@ bootstrapApplication(AppComponent, {
         mode: 'ios',
         backButtonText: ''
       })
-    )
+    ),
+    NgEventBus
   ]
 }).catch(err => console.error(err));
